@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -ex
+
+rm -f /etc/rsyslog.d/100-rsyslog-loghost.conf
+
+service rsyslog restart > /dev/null
+echo 0

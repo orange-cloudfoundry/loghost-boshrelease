@@ -1,0 +1,62 @@
+---
+name: loghost
+
+templates:
+  pre-start.erb: bin/pre-start
+  drain.erb: bin/drain
+  rsyslog-loghost.conf.erb: config/rsyslog-loghost.conf
+  logrotate-loghost.conf.erb: config/logrotate-loghost.conf
+
+packages: []
+
+properties:
+  loghost.syslog.tcp.enabled:
+    description: "Enable TCP module"
+    default: false
+  loghost.syslog.tcp.port:
+    description: "Port for TCP module"
+    default: 514
+
+  loghost.syslog.udp.enabled:
+    description: "Enable UDP module"
+    default: true
+  loghost.syslog.udp.port:
+    description: "Port for UDP module"
+    default: 514
+
+  loghost.syslog.forward:
+    description: |
+      Hash that describe log forwarding. Each key defines a target type composed by
+      - a list of conditions that must match to trigger the forward
+      - a list of remote endpoints to forward the log to
+      Conditions must be writter in RainerScript. Available fields are standard rsyslog
+      variables (like $msg, $programname, etc) and parsed structured-data defined in
+      instance@47450:
+      - $.director
+      - $.deployment
+      - $.group
+      - $.az
+      - $.id
+    default: {}
+    example:
+      backup:
+        conditions:
+          - ($.director == "my-director")
+        targets:
+          - address: 10.4.0.32
+            port: 514
+            transport: tcp
+      security:
+        conditions:
+          security:
+            - ($.director == "my-director")
+            - ($.group    == "cf")
+            - ($app-name  == "uaa")
+          targets:
+            - address: 10.120.53
+              port: 514
+              transport: udp
+
+  loghost.logrotate.max-days:
+    description: "Number of days to keep log-rotated archives"
+    default: 31

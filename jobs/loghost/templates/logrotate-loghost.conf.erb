@@ -1,0 +1,7 @@
+/var/vcap/store/loghost/*/*/*.log {
+ rotate <%= p('loghost.logrotate.max-days') %>
+ daily
+ missingok
+ compress
+ copytruncate
+}

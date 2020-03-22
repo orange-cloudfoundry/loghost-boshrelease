@@ -1,0 +1,34 @@
+- type: replace
+  path: /instance_groups/-
+  value:
+    instances: 1
+    azs: [z1]
+    name: loghost
+    jobs:
+      - name: loghost
+        release: loghost
+        properties:
+          loghost:
+            syslog:
+              tcp:
+                enabled: false
+                port: 514
+              udp:
+                enabled: true
+                port: 514
+              forward: {}
+            logrotate:
+              max-days: 31
+    networks:
+      - name: default
+    stemcell: default
+    vm_type: default
+    persistent_disk_type: 10GB
+
+- type: replace
+  path: /releases/-
+  value:
+    name: loghost
+    version: 1.0.0
+    url: https://github.com/orange-cloudfoundry/boshupdate-boshrelease/releases/download/v2.1.4/loghost-boshrelease-1.0.0.tgz
+    sha1: tbd

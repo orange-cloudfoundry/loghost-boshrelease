@@ -1,0 +1,63 @@
+<% if p('loghost.syslog.udp.enabled') %>
+module(load="imudp")
+input(type="imudp" port="<%= p('loghost.syslog.udp.port') %>")
+<% end %>
+
+<% if p('loghost.syslog.tcp.enabled') %>
+module(load="imtcp")
+input(type="imtcp" port="<%= p('loghost.syslog.tcp.port') %>")
+<% end %>
+
+# load module that parses structured-data field
+module(load="mmpstrucdata")
+
+# define filename template local storage
+# [instance@47450 director="{director}" deployment="{deployment}" group="{instance}" az="{az}" id="id"]
+template(name="ParsedOutputFile" type="list") {
+  constant(value="/var/vcap/store/loghost/")
+  property(name="$.director")
+  constant(value="/")
+  property(name="$.deployment")
+  constant(value="/")
+  property(name="$.group")
+  constant(value=".log")
+}
+
+# define template for forwarding
+template(name="ForwardTemplate" type="list") {
+  property(name="rawmsg")
+}
+
+# apply rules when structured-data matching instance@47450
+if ($structured-data contains "instance@47450") then {
+  # parse structured-data
+  action(type="mmpstrucdata")
+
+  # set local variables
+  set $.director   = $!rfc5424-sd!instance@47450!director;
+  set $.deployment = $!rfc5424-sd!instance@47450!deployment;
+  set $.group      = $!rfc5424-sd!instance@47450!group;
+  set $.az         = $!rfc5424-sd!instance@47450!az;
+  set $.id         = $!rfc5424-sd!instance@47450!id;
+
+  if ($.group == "") then {
+    set $.group = $.deployment;
+  }
+
+  # output to local file
+  action(type="omfile" dynaFile="ParsedOutputFile")
+
+  <% if p('loghost.syslog.forward').length > 0 %>
+  # extract structured-data into variables for easier use in condition expressions
+  <% p('loghost.syslog.forward').each do |key, value| %>
+  if <%= value.fetch("conditions").join(" and ") %> then {
+    <% value.fetch("targets").each do |forward| %>
+    action(type="omfwd" Target="<%= forward.fetch('address') %>" Port="<%= forward.fetch('port') %>" Protocol="<%= forward.fetch('transport') %>" Template="ForwardTemplate")
+    <% end %>
+  }
+  <% end %>
+  <% end %>
+
+  # no further log processing
+  stop
+}

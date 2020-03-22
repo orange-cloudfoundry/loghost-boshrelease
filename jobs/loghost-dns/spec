@@ -1,0 +1,17 @@
+---
+name: loghost-dns
+
+templates:
+  aliases.json.erb: dns/aliases.json
+
+packages: []
+
+properties:
+  loghost-dns.aliases:
+    description: "Add given list of dns aliases to bosh-dns"
+    default: {}
+    example:
+      loghost.service.logservice.multis.z1:
+        - 10.234.54.132
+      loghost.service.logservice.multis.z2:
+        - 10.234.50.132
