@@ -1,0 +1,123 @@
+groups:
+  - name: loghost
+    rules:
+      - alert: LoghostNoLogReceived
+        expr: |
+          (
+            sum(increase(loghost_total[15m]))
+            or vector(0)
+          ) == 0
+        for: <%= p('loghost_alerts.nologs.evaluation_time') %>
+        labels:
+          service: loghost
+          severity: warning
+        annotations:
+          summary: "No logs were received at instance `{{$labels.instance}}` in the last 15 minutes"
+          description: |
+            Logs are not concetrated and locally stored on loghost instance `{{$labels.instance}}`
+
+            Impact:
+            - moderate impact and is not a production emergency
+
+            Possible causes:
+            - misconfiguration of rsyslog and loghost_exporter on loghost instance
+            - prometheus is not scraping loghost_exporter as it should
+
+            Resolution:
+            - contact Cloud Foundry administrator team
+      <% if p('loghost_alerts.enable_security') %>
+      - alert: SecurityTooManyAuthFailures
+        expr: |
+          loghost_auth_failures_last_5m >= <%= p('loghost_alerts.security.authfail.threshold') %>
+        for: <%= p('loghost_alerts.security.authfail.evaluation_time') %>
+        labels:
+          service: loghost
+          severity: warning
+        annotations:
+          summary: "Number of authentication failures {{ $value }} is higher than <%= p('loghost_alerts.security.authfail.threshold') %> in the last 5 minutes"
+          description: |
+            Too many authentication failures were detected from the origin {{ $labels.ip }} in the last 5 minutes
+            Number of authentication failures `{{ $value }}` is higher than configured threshold of `<%= p('loghost_alerts.security.authfail.threshold') %>`
+
+            Details:
+            - ip: `{{ $labels.ip }}`
+            - source: `{{ $labels.source }}`
+            - director: `{{ $labels.director }}`
+            - deployment: `{{ $labels.deployment }}`
+            - group: `{{ $labels.group }}`
+
+            Impact:
+            - it might be a security attack of the system
+            - this is not a production emergency
+
+            Possible causes:
+            - a legitimate user has trouble login on the platform
+            - a program is using wrong or oudated credentials
+            - an external attack is ongoing on the platform
+
+            Resolution:
+            - contact Cloud Foundry administrator team
+            - contact Security team
+      - alert: SecurityTooManyUaaClientFailures
+        expr: |
+          loghost_uaa_client_login_failure_last_5m >= <%= p('loghost_alerts.security.uaaclientfail.threshold') %>
+        for: <%= p('loghost_alerts.security.uaaclientfail.evaluation_time') %>
+        labels:
+          service: loghost
+          severity: warning
+        annotations:
+          summary: "Number of UAA client authentication failures {{ $value }} is higher than <%= p('loghost_alerts.security.uaaclientfail.threshold') %> in the last 5 minutes"
+          description: |
+            Too many UAA client authentication failures were detected from the origin {{ $labels.ip }} in the last 5 minutes
+            Number of authentication failures `{{ $value }}` is higher than configured threshold of `<%= p('loghost_alerts.security.uaaclientfail.threshold') %>`
+
+            Details:
+            - ip: `{{ $labels.ip }}`
+            - director: `{{ $labels.director }}`
+            - deployment: `{{ $labels.deployment }}`
+            - group: `{{ $labels.group }}`
+
+            Impact:
+            - it might be a security attack of the system
+            - this is not a production emergency
+
+            Possible causes:
+            - a legitimate user has trouble login on the platform
+            - a program is using wrong or oudated credentials
+            - an external attack is ongoing on the platform
+
+            Resolution:
+            - contact Cloud Foundry administrator team
+            - contact Security team
+      - alert: SecurityTooManyUaaUserFailures
+        expr: |
+          loghost_uaa_user_login_failure_last_5m >= <%= p('loghost_alerts.security.uaauserfail.threshold') %>
+        for: <%= p('loghost_alerts.security.uaauserfail.evaluation_time') %>
+        labels:
+          service: loghost
+          severity: warning
+        annotations:
+          summary: "Number of UAA user authentication failures {{ $value }} is higher than <%= p('loghost_alerts.security.uaauserfail.threshold') %> in the last 5 minutes"
+          description: |
+            Too many UAA user authentication failures were detected from the origin {{ $labels.ip }} in the last 5 minutes
+            Number of authentication failures `{{ $value }}` is higher than configured threshold of `<%= p('loghost_alerts.security.uaauserfail.threshold') %>`
+
+            Details:
+            - ip: `{{ $labels.ip }}`
+            - director: `{{ $labels.director }}`
+            - deployment: `{{ $labels.deployment }}`
+            - group: `{{ $labels.group }}`
+
+            Impact:
+            - it might be a security attack of the system
+            - this is not a production emergency
+
+            Possible causes:
+            - a legitimate user has trouble login on the platform
+            - a program is using wrong or oudated credentials
+            - an external attack is ongoing on the platform
+
+            Resolution:
+            - contact Cloud Foundry administrator team
+            - contact Security team
+      <% end %>

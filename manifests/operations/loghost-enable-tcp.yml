@@ -1,3 +1,0 @@
-- type: replace
-  path: /instance_groups/name=loghost/jobs/name=loghost/properties/loghost/syslog/tcp?/enabled?
-  value: true

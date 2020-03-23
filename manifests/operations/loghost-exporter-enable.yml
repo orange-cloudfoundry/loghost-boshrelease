@@ -1,0 +1,38 @@
+
+- type: replace
+  path: /instance_groups/name=loghost/jobs/-
+  value:
+    name: bpm
+    release: bpm
+
+- type: replace
+  path: /instance_groups/name=loghost/jobs/-
+  value:
+    name: loghost_exporter
+    release: loghost
+    properties:
+      loghost_exporter:
+          metrics:
+            - name: loghost_error_total
+              type: counter
+              help: number of errors logs
+              match: '(level=error|level":"error|Subscribe error|lvl=err|lvl=eror)'
+              labels: &labels
+                #                            base  dir   dep   grp
+                director:   '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\1"}}'
+                deployment: '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\2"}}'
+                group:      '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\3"}}'
+            - name: loghost_total
+              type: counter
+              help: number of logs
+              match: '.*'
+              labels:
+                <<: *labels
+          directors:
+            - ((director_name))
+
+- type: replace
+  path: /releases/name=bpm?
+  value:
+    name: bpm
+    version: latest

@@ -1,0 +1,8 @@
+- type: replace
+  path: /instance_groups/name=loghost/jobs/-
+  value:
+    name: loghost_dns
+    release: loghost
+    properties:
+      loghost_dns:
+        aliases: {}

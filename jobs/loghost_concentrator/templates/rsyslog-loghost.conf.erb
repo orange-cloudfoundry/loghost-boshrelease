@@ -1,11 +1,14 @@
-<% if p('loghost.syslog.udp.enabled') %>
+$PrivDropToUser root
+$PrivDropToGroup root
+
+<% if p('loghost_concentrator.syslog.udp.enabled') %>
 module(load="imudp")
-input(type="imudp" port="<%= p('loghost.syslog.udp.port') %>")
+input(type="imudp" port="<%= p('loghost_concentrator.syslog.udp.port') %>")
 <% end %>
 
-<% if p('loghost.syslog.tcp.enabled') %>
+<% if p('loghost_concentrator.syslog.tcp.enabled') %>
 module(load="imtcp")
-input(type="imtcp" port="<%= p('loghost.syslog.tcp.port') %>")
+input(type="imtcp" port="<%= p('loghost_concentrator.syslog.tcp.port') %>")
 <% end %>
 
 # load module that parses structured-data field
@@ -45,11 +48,11 @@ if ($structured-data contains "instance@47450") then {
   }
 
   # output to local file
-  action(type="omfile" dynaFile="ParsedOutputFile")
+  action(type="omfile" dynaFile="ParsedOutputFile" dirOwner="vcap" fileOwner="vcap" dirGroup="vcap" fileGroup="vcap" fileCreateMode="0640" dirCreateMode="0750")
 
-  <% if p('loghost.syslog.forward').length > 0 %>
+  <% if p('loghost_concentrator.syslog.forward').length > 0 %>
   # extract structured-data into variables for easier use in condition expressions
-  <% p('loghost.syslog.forward').each do |key, value| %>
+  <% p('loghost_concentrator.syslog.forward').each do |key, value| %>
   if <%= value.fetch("conditions").join(" and ") %> then {
     <% value.fetch("targets").each do |forward| %>
     action(type="omfwd" Target="<%= forward.fetch('address') %>" Port="<%= forward.fetch('port') %>" Protocol="<%= forward.fetch('transport') %>" Template="ForwardTemplate")

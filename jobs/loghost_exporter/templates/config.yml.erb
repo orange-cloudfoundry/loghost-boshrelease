@@ -1,0 +1,49 @@
+<%
+require 'yaml'
+
+# compute inputs
+base = p('loghost_exporter.base')
+paths = []
+p('loghost_exporter.directors').each do |director|
+  p('loghost_exporter.deployments').each do |deployment|
+    paths << File.join(base, director, deployment, "*.log")
+  end
+end
+
+
+# compute imports
+imports = [{
+  "type" => "grok_patterns",
+  "dir" => "/var/vcap/packages/grok_exporter/patterns"
+}]
+if_p('loghost_exporter.imports') do |items|
+  imports.concat(items)
+end
+
+# compute server settings
+server = {
+  "protocol" => p('loghost_exporter.server.protocol'),
+  "path"     => p('loghost_exporter.server.path'),
+  "port"     => p('loghost_exporter.server.port'),
+}
+
+[ "host", "cert", "key" ].each do |key|
+  if_p('loghost_exporter.server.#{key}') do |val|
+    server[key] = val
+  end
+end
+
+# output config
+config = {
+  "global"  => { "config_version" => 3  },
+  "imports" => imports,
+  "metrics" => p('loghost_exporter.metrics'),
+  "input"   => {
+    "type"                    => "file",
+    "fail_on_missing_logfile" => false,
+    "paths"                   => paths
+  },
+  "server" => server
+}
+%>
+<%= config.to_yaml %>

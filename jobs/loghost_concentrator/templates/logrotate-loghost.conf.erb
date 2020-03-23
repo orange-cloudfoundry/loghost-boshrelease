@@ -1,7 +1,8 @@
 /var/vcap/store/loghost/*/*/*.log {
- rotate <%= p('loghost.logrotate.max-days') %>
+ rotate <%= p('loghost_concentrator.logrotate.max-days') %>
  daily
  missingok
  compress
  copytruncate
+ su vcap vcap
 }

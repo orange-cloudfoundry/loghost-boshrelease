@@ -1,5 +1,5 @@
 ---
-name: loghost-dns
+name: loghost_dns
 
 templates:
   aliases.json.erb: dns/aliases.json
@@ -7,7 +7,7 @@ templates:
 packages: []
 
 properties:
-  loghost-dns.aliases:
+  loghost_dns.aliases:
     description: "Add given list of dns aliases to bosh-dns"
     default: {}
     example:

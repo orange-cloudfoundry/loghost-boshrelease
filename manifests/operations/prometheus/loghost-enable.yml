@@ -1,0 +1,55 @@
+# prometheus scraping
+- type: replace
+  path: /instance_groups/name=prometheus2/jobs/name=prometheus2/properties/prometheus/scrape_configs/-
+  value:
+    job_name: loghost_exporter
+    file_sd_configs:
+      - files:
+        - "/var/vcap/store/bosh_exporter/bosh_target_groups.json"
+    relabel_configs:
+      - source_labels:
+        - __meta_bosh_job_process_name
+        regex: loghost_exporter
+        action: keep
+      - source_labels:
+        - __address__
+        regex: "(.*)"
+        target_label: __address__
+        replacement: "${1}:9144"
+
+
+# grafana dashboards
+- type: replace
+  path: /instance_groups/name=grafana/jobs/-
+  value:
+    name: loghost_dashboards
+    release: loghost
+    properties:
+      loghost_dashboards:
+        enable_security: false
+- type: replace
+  path: /instance_groups/name=grafana/jobs/name=grafana/properties/grafana/prometheus/dashboard_folders/name=Loghost?/files?/-
+  value: /var/vcap/jobs/loghost_dashboards/*.json
+
+# alertmanager alerts
+- type: replace
+  path: /instance_groups/name=prometheus2/jobs/-
+  value:
+    name: loghost_alerts
+    release: loghost
+    properties:
+      loghost_alerts:
+        enable_security: false
+- type: replace
+  path: /instance_groups/name=prometheus2/jobs/name=prometheus2/properties/prometheus/rule_files/-
+  value:
+    /var/vcap/jobs/loghost_alerts/*.alerts.yml
+
+# release
+- type: replace
+  path: /releases/-
+  value:
+    name: loghost
+    version: 1.0.0
+    url: https://github.com/orange-cloudfoundry/boshupdate-boshrelease/releases/download/v2.1.4/loghost-boshrelease-1.0.0.tgz
+    sha1: tbd

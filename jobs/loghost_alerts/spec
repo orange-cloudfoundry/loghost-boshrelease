@@ -1,0 +1,35 @@
+---
+name: loghost_alerts
+
+packages: []
+
+templates:
+  loghost.alerts.yml: loghost.alerts.yml
+
+properties:
+  loghost_alerts.nologs.evaluation_time:
+    description: "No received logs alerts evaluation time"
+    default: 15m
+
+
+  loghost_alerts.enable_security:
+    decription: "Enable security alerts"
+    default: false
+  loghost_alerts.security.authfail.threshold:
+    description: "Amount of login failures in the past 5 minutes to trigger alert"
+    default: 5
+  loghost_alerts.security.authfail.evaluation_time:
+    description: "Evalutation time before firing alert"
+    default: 0m
+  loghost_alerts.security.uaauserfail.threshold:
+    description: "Amount of login failures in the past 5 minutes to trigger alert"
+    default: 5
+  loghost_alerts.security.uaauserfail.evaluation_time:
+    description: "Evalutation time before firing alert"
+    default: 0m
+  loghost_alerts.security.uaaclientfail.threshold:
+    description: "Amount of login failures in the past 5 minutes to trigger alert"
+    default: 5
+  loghost_alerts.security.uaaclientfail.evaluation_time:
+    description: "Evalutation time before firing alert"
+    default: 0m

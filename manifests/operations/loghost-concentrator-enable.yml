@@ -5,10 +5,10 @@
     azs: [z1]
     name: loghost
     jobs:
-      - name: loghost
+      - name: loghost_concentrator
         release: loghost
         properties:
-          loghost:
+          loghost_concentrator:
             syslog:
               tcp:
                 enabled: false

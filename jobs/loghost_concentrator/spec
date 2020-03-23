@@ -1,5 +1,5 @@
 ---
-name: loghost
+name: loghost_concentrator
 
 templates:
   pre-start.erb: bin/pre-start
@@ -10,21 +10,21 @@ templates:
 packages: []
 
 properties:
-  loghost.syslog.tcp.enabled:
+  loghost_concentrator.syslog.tcp.enabled:
     description: "Enable TCP module"
     default: false
-  loghost.syslog.tcp.port:
+  loghost_concentrator.syslog.tcp.port:
     description: "Port for TCP module"
     default: 514
 
-  loghost.syslog.udp.enabled:
+  loghost_concentrator.syslog.udp.enabled:
     description: "Enable UDP module"
     default: true
-  loghost.syslog.udp.port:
+  loghost_concentrator.syslog.udp.port:
     description: "Port for UDP module"
     default: 514
 
-  loghost.syslog.forward:
+  loghost_concentrator.syslog.forward:
     description: |
       Hash that describe log forwarding. Each key defines a target type composed by
       - a list of conditions that must match to trigger the forward
@@ -57,6 +57,6 @@ properties:
               port: 514
               transport: udp
 
-  loghost.logrotate.max-days:
+  loghost_concentrator.logrotate.max-days:
     description: "Number of days to keep log-rotated archives"
     default: 31

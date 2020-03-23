@@ -1,0 +1,57 @@
+- type: replace
+  path: /instance_groups/name=prometheus2/jobs/name=prometheus2/properties/prometheus/custom_rules?/-
+  value:
+    name: loghost-security-rules
+    # https://github.com/prometheus/prometheus/issues/1673
+    rules:
+      - record: loghost_auth_failures_last_5m
+        expr: |
+          (
+            sum(loghost_auth_failure or loghost_auth_failure{} * 0) by (director, deployment, group, source, ip)
+            -
+            sum(loghost_auth_failure offset 5m or loghost_auth_failure{} * 0) by (director, deployment, group, source, ip)
+          ) >= 0
+      - record: loghost_uaa_client_login_failure_last_5m
+        expr: |
+          (
+            sum(loghost_uaa_client_login_failure or loghost_uaa_client_login_failure{} * 0) by (director, deployment, group, ip)
+            -
+            sum(loghost_uaa_client_login_failure offset 5m or loghost_uaa_client_login_failure{} * 0) by (director, deployment, group, ip)
+          ) >= 0
+      - record: loghost_uaa_user_login_failure_last_5m
+        expr: |
+          (
+            sum(loghost_uaa_user_login_failure or loghost_uaa_user_login_failure{} * 0) by (director, deployment, group, ip)
+            -
+            sum(loghost_uaa_user_login_failure offset 5m or loghost_uaa_user_login_failure{} * 0) by (director, deployment, group, ip)
+          ) >= 0
+      - record: loghost_auth_success_last_5m
+        expr: |
+          (
+            sum(loghost_auth_success or loghost_auth_success{} * 0) by (director, deployment, group, source, username, ip)
+            -
+            sum(loghost_auth_success offset 5m or loghost_auth_success{} * 0) by (director, deployment, group, source, username, ip)
+          ) >= 0
+      - record: loghost_uaa_client_login_success_last_5m
+        expr: |
+          (
+            sum(loghost_uaa_client_login_success or loghost_uaa_client_login_success{} * 0) by (director, deployment, group, clientid, ip)
+            -
+            sum(loghost_uaa_client_login_success offset 5m or loghost_uaa_client_login_success{} * 0) by (director, deployment, group, clientid, ip)
+          ) >= 0
+      - record: loghost_uaa_user_login_success_last_5m
+        expr: |
+          (
+            sum(loghost_uaa_user_login_success or loghost_uaa_user_login_success{} * 0) by (director, deployment, group, username, ip)
+            -
+            sum(loghost_uaa_user_login_success offset 5m or loghost_uaa_user_login_success{} * 0) by (director, deployment, group, username, ip)
+          ) >= 0
+
+
+- type: replace
+  path: /instance_groups/name=grafana/jobs/name=loghost_dashboards/properties/loghost_dashboards/enable_security
+  value: true
+
+- type: replace
+  path: /instance_groups/name=prometheus2/jobs/name=loghost_alerts/properties/loghost_alerts/enable_security
+  value: true

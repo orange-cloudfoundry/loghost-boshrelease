@@ -1,0 +1,85 @@
+- type: replace
+  path: /instance_groups/name=loghost/jobs/name=loghost_exporter/properties/loghost_exporter/metrics/-
+  value:
+    name: loghost_uaa_user_login_success
+    type: counter
+    help: number of successful uaa login for users
+    match: "INFO --- Audit: IdentityProviderAuthenticationSuccess \\('%{DATA:login}'\\): principal=%{DATA:guid}, origin=\\[remoteAddress=%{DATA:ip}, clientId=%{DATA:principal}\\], identityZoneId=\\[uaa\\], authenticationType=\\[ldap\\]"
+    labels:
+      director:   '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\1"}}'
+      deployment: '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\2"}}'
+      group:      '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\3"}}'
+      ip: '{{.ip}}'
+      username: '{{.login}}'
+
+- type: replace
+  path: /instance_groups/name=loghost/jobs/name=loghost_exporter/properties/loghost_exporter/metrics/-
+  value:
+    name: loghost_uaa_user_login_failure
+    type: counter
+    help: number of uaa login failures for users
+    match: "INFO --- Audit: IdentityProviderAuthenticationFailure \\('%{DATA:login}'\\): principal=null, origin=\\[remoteAddress=%{DATA:ip}, clientId=%{DATA:principal}\\], identityZoneId=\\[uaa\\], authenticationType=\\[ldap\\]"
+    labels:
+      director:   '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\1"}}'
+      deployment: '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\2"}}'
+      group:      '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\3"}}'
+      ip: '{{.ip}}'
+      username: '{{.login}}'
+
+
+- type: replace
+  path: /instance_groups/name=loghost/jobs/name=loghost_exporter/properties/loghost_exporter/metrics/-
+  value:
+    name: loghost_uaa_client_login_failure
+    type: counter
+    help: number of uaa login failures for clients
+    match: "INFO --- Audit: ClientAuthenticationFailure \\('Bad credentials'\\): principal=%{DATA:login}, origin=\\[remoteAddress=%{DATA:ip}, clientId=%{DATA:principal}\\], identityZoneId=\\[uaa\\]"
+    labels:
+      director:   '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\1"}}'
+      deployment: '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\2"}}'
+      group:      '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\3"}}'
+      ip: '{{.ip}}'
+      clientid: '{{.login}}'
+
+- type: replace
+  path: /instance_groups/name=loghost/jobs/name=loghost_exporter/properties/loghost_exporter/metrics/-
+  value:
+    name: loghost_uaa_client_login_success
+    type: counter
+    help: number of uaa login success for clients
+    match: "INFO --- Audit: ClientAuthenticationSuccess \\('Client authentication success'\\): principal=%{DATA:login}, origin=\\[remoteAddress=%{DATA:ip}, clientId=%{DATA:principal}\\], identityZoneId=\\[uaa\\]"
+    labels:
+      director:   '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\1"}}'
+      deployment: '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\2"}}'
+      group:      '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\3"}}'
+      ip: '{{.ip}}'
+      clientid: '{{.login}}'
+
+- type: replace
+  path: /instance_groups/name=loghost/jobs/name=loghost_exporter/properties/loghost_exporter/metrics/-
+  value:
+    name: loghost_auth_failure
+    type: counter
+    help: number of system auth failures
+    match: "type=USER_(AUTH|ERR) msg=audit\\(%{DATA}\\): pid=%{NUMBER} uid=%{NUMBER} auid=%{NUMBER} ses=%{NUMBER} msg='op=PAM:(bad_ident|authentication) acct=\"%{DATA}\" exe=\"%{DATA:source}\" hostname=%{DATA} addr=%{DATA:ip} terminal=%{DATA} res=failed'"
+    labels:
+      director:   '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\1"}}'
+      deployment: '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\2"}}'
+      group:      '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\3"}}'
+      ip:         '{{.ip}}'
+      source:     '{{.source}}'
+
+- type: replace
+  path: /instance_groups/name=loghost/jobs/name=loghost_exporter/properties/loghost_exporter/metrics/-
+  value:
+    name: loghost_auth_success
+    type: counter
+    help: number of system authentication success
+    match: "type=USER_ACCT msg=audit\\(%{DATA}\\): pid=%{NUMBER} uid=%{NUMBER} auid=%{NUMBER} ses=%{NUMBER} msg='op=PAM:accounting acct=\"%{DATA:username}\" exe=\"%{DATA:source}\" hostname=%{DATA} addr=%{DATA:ip} terminal=%{DATA} res=success'"
+    labels:
+      director:   '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\1"}}'
+      deployment: '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\2"}}'
+      group:      '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\3"}}'
+      ip:         '{{.ip}}'
+      username:   '{{.username}}'
+      source:     '{{.source}}'

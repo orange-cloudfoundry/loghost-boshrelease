@@ -1,0 +1,9 @@
+processes:
+- name: loghost_exporter
+  executable: /var/vcap/packages/grok_exporter/grok_exporter
+  env: {}
+  args:
+    - -config
+    - /var/vcap/jobs/loghost_exporter/config/config.yml
+  additional_volumes:
+    - path: <%= p('loghost_exporter.base') %>

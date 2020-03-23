@@ -1,0 +1,13 @@
+---
+name: loghost_dashboards
+
+packages: []
+
+templates:
+  loghost_system.json: loghost_system.json
+  loghost_security.json: loghost_security.json
+
+properties:
+  loghost_dashboards.enable_security:
+    description: "enable security dashboard"
+    default: false

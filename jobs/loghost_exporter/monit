@@ -1,0 +1,5 @@
+check process loghost_exporter
+  with pidfile /var/vcap/sys/run/bpm/loghost_exporter/loghost_exporter.pid
+  start program "/var/vcap/jobs/bpm/bin/bpm start loghost_exporter"
+  stop program "/var/vcap/jobs/bpm/bin/bpm stop loghost_exporter"
+  group vcap

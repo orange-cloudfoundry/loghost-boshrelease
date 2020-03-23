@@ -1,0 +1,5 @@
+---
+name: grok_exporter
+
+files:
+  - grok_exporter/grok_exporter-1.0.0.RC3.linux-amd64.zip

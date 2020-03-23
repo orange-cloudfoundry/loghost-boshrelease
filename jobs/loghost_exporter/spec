@@ -1,0 +1,49 @@
+---
+name: loghost_exporter
+
+templates:
+  config.yml.erb: config/config.yml
+  bpm.yml: config/bpm.yml
+  pre-start.erb: bin/pre-start
+
+packages:
+  - grok_exporter
+
+properties:
+  loghost_exporter.server.protocol:
+    description: "can be http or https. Default is http."
+    default: http
+  loghost_exporter.server.host:
+    description: "can be a hostname or an IP address. If host is specified, loghost_exporter will listen on the network interface with the given address. If host is omitted, loghost_exporter will listen on all available network interfaces. If host is set to [::], loghost_exporter will listen on all IPV6 addresses."
+  loghost_exporter.server.port:
+    description: "TCP port to be used. Default is 9144."
+    default: 9144
+  loghost_exporter.server.path:
+    description: "where the metrics are exposed. Default is /metrics, i.e. by default metrics will be exported on http://localhost:9144/metrics."
+    default: /metrics
+  loghost_exporter.server.cert:
+    description: "path to the SSL certificate file for protocol https. It is optional. If omitted, a hard-coded default certificate will be used."
+  loghost_exporter.server.key:
+    description: "path to the SSL key file for protocol https. It is optional. If omitted, a hard-coded default key will be used."
+  loghost_exporter.metrics:
+    description: "list of metrics to generate, given in grok_exporter config metrics format"
+    example:
+      name: loghost_total
+      type: counter
+      help: number of logs
+      match: '.*'
+      labels:
+        my-label: value
+  loghost_exporter.base:
+    description: "Root directory to mount on loghost_exporter container to access logs"
+    default: /var/vcap/store/loghost
+  loghost_exporter.deployments:
+    description: "list of deployments to watch"
+    default:
+      - bosh
+      - jumbox
+      - cf
+      - prometheus
+      - concourse
+  loghost_exporter.directors:
+    description: "list of directors to watch"

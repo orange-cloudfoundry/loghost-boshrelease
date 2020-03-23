@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+
+mkdir -p ${BOSH_INSTALL_TARGET}/
+
+cd ${BOSH_COMPILE_TARGET}/grok_exporter
+unzip grok_exporter-1.0.0.RC3.linux-amd64.zip
+
+cp -a grok_exporter-1.0.0.RC3.linux-amd64/* ${BOSH_INSTALL_TARGET}/

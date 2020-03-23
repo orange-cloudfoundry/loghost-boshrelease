@@ -2,11 +2,11 @@
 
 set -ex
 
-jobRoot=/var/vcap/jobs/loghost
+jobRoot=/var/vcap/jobs/loghost_concentrator
 logRoot=/var/vcap/store/loghost
 
 mkdir -p ${logRoot}
-chown -R syslog:syslog ${logRoot}
+chown vcap:vcap ${logRoot}
 chmod 0755 ${logRoot}
 
 cp ${jobRoot}/config/rsyslog-loghost.conf /etc/rsyslog.d/100-rsyslog-loghost.conf
