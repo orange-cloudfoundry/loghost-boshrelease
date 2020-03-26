@@ -1,1 +1,5 @@
 name: loghost
+blobstore:
+  provider: s3
+  options:
+    bucket_name: orange-dfy-bosh-dev-releases
