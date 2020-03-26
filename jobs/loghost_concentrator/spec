@@ -57,6 +57,6 @@ properties:
               port: 514
               transport: udp
 
-  loghost_concentrator.logrotate.max-days:
-    description: "Number of days to keep log-rotated archives"
-    default: 31
+  loghost_concentrator.logrotate.max-hours:
+    description: "Number of hours to keep log-rotated archives"
+    default: 360
