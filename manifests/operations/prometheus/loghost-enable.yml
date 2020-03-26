@@ -50,6 +50,6 @@
   path: /releases/-
   value:
     name: loghost
-    version: 1.0.0
-    url: https://github.com/orange-cloudfoundry/boshupdate-boshrelease/releases/download/v2.1.4/loghost-boshrelease-1.0.0.tgz
-    sha1: tbd
+    version: 1.0.2
+    url: https://github.com/orange-cloudfoundry/loghost-boshrelease/releases/download/v1.0.2/loghost-boshrelease-1.0.2.tgz
+    sha1: fc3c2ce1c60855a3a1f364378c6d4303e094c8cb
