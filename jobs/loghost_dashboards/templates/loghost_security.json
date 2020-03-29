@@ -1,4 +1,4 @@
-<% if p('loghost_dashboards.enable_security') %>
+<% if p('loghost_dashboards.security.enabled') %>
 {
   "annotations": {
     "list": [
@@ -16,8 +16,8 @@
   "editable": false,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 107,
-  "iteration": 1585154160588,
+  "id": 115,
+  "iteration": 1585486135421,
   "links": [],
   "panels": [
     {
@@ -629,7 +629,7 @@
       },
       "id": 12,
       "panels": [],
-      "title": "UAA (User)",
+      "title": "UAA Users",
       "type": "row"
     },
     {
@@ -1025,7 +1025,7 @@
       },
       "id": 18,
       "panels": [],
-      "title": "UAA (Clients)",
+      "title": "UAA Clients",
       "type": "row"
     },
     {
@@ -1273,7 +1273,7 @@
         "threshold": 0
       },
       "datasource": null,
-      "description": "Show the distribution of current authentication failure per target",
+      "description": "Show the distribution of current authentication failure per origin",
       "fontSize": "80%",
       "format": "short",
       "gridPos": {
@@ -1282,7 +1282,7 @@
         "x": 6,
         "y": 41
       },
-      "id": 22,
+      "id": 38,
       "interval": null,
       "legend": {
         "percentage": true,
@@ -1300,15 +1300,15 @@
       "strokeWidth": 1,
       "targets": [
         {
-          "expr": "sum(loghost_uaa_client_login_failure_last_5m{director=~\"$director\", deployment=~\"$deployment\", group=~\"$group\"}) by (director, deployment, group) > 0",
+          "expr": "sum(loghost_uaa_client_login_failure_last_5m{director=~\"$director\", deployment=~\"$deployment\", group=~\"$group\"}) by (ip) > 0",
           "instant": true,
-          "legendFormat": "{{deployment}}/{{group}}",
+          "legendFormat": "{{ip}}",
           "refId": "A"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Current failure distribution per target",
+      "title": "Current failure distribution per origin",
       "type": "grafana-piechart-panel",
       "valueName": "current"
     },
@@ -1405,6 +1405,352 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Current success distribution per origin",
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 46
+      },
+      "id": 33,
+      "panels": [],
+      "title": "Diego SSH",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "Shows the increase of authentication failures in the last 5 minutes",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 47
+      },
+      "hiddenSeries": false,
+      "id": 37,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": true,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sort": "current",
+        "sortDesc": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(loghost_diego_ssh_failure_last_5m{director=~\"$director\", deployment=~\"$deployment\", group=~\"$group\"}) by (user) > 0",
+          "legendFormat": "{{user}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Failures / 5m",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "Shows the increase of authentication success in the last 5 minutes",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 47
+      },
+      "hiddenSeries": false,
+      "id": 34,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": true,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sort": "current",
+        "sortDesc": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(loghost_diego_ssh_success_last_5m{director=~\"$director\", deployment=~\"$deployment\", group=~\"$group\"}) by (user, username) > 0",
+          "legendFormat": "{{username}} - {{user}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Success / 5m",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": null,
+      "description": "Show the distribution of current authentication failure per target",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 5,
+        "w": 12,
+        "x": 0,
+        "y": 55
+      },
+      "id": 22,
+      "interval": null,
+      "legend": {
+        "percentage": true,
+        "show": true,
+        "sort": "current",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "options": {},
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(loghost_diego_ssh_failure_last_5m{director=~\"$director\", deployment=~\"$deployment\", group=~\"$group\"}) by (user) > 0",
+          "instant": true,
+          "legendFormat": "{{user}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Current failure distribution per target",
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": null,
+      "description": "Show the distribution of current Diego ssh authentications success per target",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 12,
+        "y": 55
+      },
+      "id": 35,
+      "interval": null,
+      "legend": {
+        "percentage": true,
+        "show": true,
+        "sort": "current",
+        "sortDesc": true,
+        "values": false
+      },
+      "legendType": "Right side",
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "options": {},
+      "pieType": "pie",
+      "strokeWidth": "1",
+      "targets": [
+        {
+          "expr": "sum(loghost_diego_ssh_success_last_5m{director=~\"$director\", deployment=~\"$deployment\", group=~\"$group\"}) by (user) > 0",
+          "instant": true,
+          "legendFormat": "{{user}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Current success distribution per target",
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": null,
+      "description": "Show the distribution of current Diego ssh authentications success per username",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 18,
+        "y": 55
+      },
+      "id": 36,
+      "interval": null,
+      "legend": {
+        "percentage": true,
+        "show": true,
+        "sort": "current",
+        "sortDesc": true,
+        "values": false
+      },
+      "legendType": "Right side",
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "options": {},
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(loghost_diego_ssh_success_last_5m{director=~\"$director\", deployment=~\"$deployment\", group=~\"$group\"}) by (username) > 0",
+          "instant": true,
+          "legendFormat": "{{username}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Current success distribution per username",
       "type": "grafana-piechart-panel",
       "valueName": "current"
     }
@@ -1530,6 +1876,6 @@
   "timezone": "",
   "title": "Security",
   "uid": "l3VwbKrZz",
-  "version": 15
+  "version": 16
 }
 <% end %>

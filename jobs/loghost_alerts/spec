@@ -11,25 +11,36 @@ properties:
     description: "No received logs alerts evaluation time"
     default: 15m
 
-
-  loghost_alerts.enable_security:
+  loghost_alerts.security.enabled:
     decription: "Enable security alerts"
     default: false
-  loghost_alerts.security.authfail.threshold:
-    description: "Amount of login failures in the past 5 minutes to trigger alert"
+  loghost_alerts.security.system_auth.fail.threshold:
+    description: "Maximum tolerated number of system authentication failures in the past 5 minutes"
     default: 5
-  loghost_alerts.security.authfail.evaluation_time:
+  loghost_alerts.security.system_auth.fail.evaluation_time:
     description: "Evalutation time before firing alert"
     default: 0m
-  loghost_alerts.security.uaauserfail.threshold:
-    description: "Amount of login failures in the past 5 minutes to trigger alert"
+  loghost_alerts.security.uaa_user.fail.threshold:
+    description: "Maximum tolerated number of UAA user authentication failures in the past 5 minutes"
     default: 5
-  loghost_alerts.security.uaauserfail.evaluation_time:
+  loghost_alerts.security.uaa_user.fail.evaluation_time:
     description: "Evalutation time before firing alert"
     default: 0m
-  loghost_alerts.security.uaaclientfail.threshold:
-    description: "Amount of login failures in the past 5 minutes to trigger alert"
+  loghost_alerts.security.uaa_client.fail.threshold:
+    description: "Maximum tolerated number of UAA client authentication failures in the past 5 minutes"
     default: 5
-  loghost_alerts.security.uaaclientfail.evaluation_time:
+  loghost_alerts.security.uaa_client.fail.evaluation_time:
+    description: "Evalutation time before firing alert"
+    default: 0m
+  loghost_alerts.security.diego_ssh.fail.threshold:
+    description: "Maximum tolerated number of Diego SSH authentication failures in the past 5 minutes"
+    default: 5
+  loghost_alerts.security.diego_ssh.fail.evaluation_time:
+    description: "Evalutation time before firing alert"
+    default: 0m
+  loghost_alerts.security.diego_ssh.success.threshold:
+    description: "Maximum tolerated number of Diego SSH authentications in the past 5 minutes"
+    default: 10
+  loghost_alerts.security.diego_ssh.success.evaluation_time:
     description: "Evalutation time before firing alert"
     default: 0m

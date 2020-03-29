@@ -25,19 +25,19 @@ groups:
 
             Resolution:
             - contact Cloud Foundry administrator team
-      <% if p('loghost_alerts.enable_security') %>
+      <% if p('loghost_alerts.security.enabled') %>
       - alert: SecurityTooManyAuthFailures
         expr: |
-          loghost_auth_failures_last_5m >= <%= p('loghost_alerts.security.authfail.threshold') %>
-        for: <%= p('loghost_alerts.security.authfail.evaluation_time') %>
+          loghost_auth_failures_last_5m >= <%= p('loghost_alerts.security.system_auth.fail.threshold') %>
+        for: <%= p('loghost_alerts.security.system_auth.fail.evaluation_time') %>
         labels:
           service: loghost
           severity: warning
         annotations:
-          summary: "Number of authentication failures {{ $value }} is higher than <%= p('loghost_alerts.security.authfail.threshold') %> in the last 5 minutes"
+          summary: "Number of authentication failures {{ $value }} is higher than <%= p('loghost_alerts.security.system_auth.fail.threshold') %> in the last 5 minutes"
           description: |
             Too many authentication failures were detected from the origin {{ $labels.ip }} in the last 5 minutes
-            Number of authentication failures `{{ $value }}` is higher than configured threshold of `<%= p('loghost_alerts.security.authfail.threshold') %>`
+            Number of authentication failures `{{ $value }}` is higher than configured threshold of `<%= p('loghost_alerts.security.system_auth.fail.threshold') %>`
 
             Details:
             - ip: `{{ $labels.ip }}`
@@ -60,16 +60,16 @@ groups:
             - contact Security team
       - alert: SecurityTooManyUaaClientFailures
         expr: |
-          loghost_uaa_client_login_failure_last_5m >= <%= p('loghost_alerts.security.uaaclientfail.threshold') %>
-        for: <%= p('loghost_alerts.security.uaaclientfail.evaluation_time') %>
+          loghost_uaa_client_login_failure_last_5m >= <%= p('loghost_alerts.security.uaa_client.fail.threshold') %>
+        for: <%= p('loghost_alerts.security.uaa_client.fail.evaluation_time') %>
         labels:
           service: loghost
           severity: warning
         annotations:
-          summary: "Number of UAA client authentication failures {{ $value }} is higher than <%= p('loghost_alerts.security.uaaclientfail.threshold') %> in the last 5 minutes"
+          summary: "Number of UAA client authentication failures {{ $value }} is higher than <%= p('loghost_alerts.security.uaa_client.fail.threshold') %> in the last 5 minutes"
           description: |
             Too many UAA client authentication failures were detected from the origin {{ $labels.ip }} in the last 5 minutes
-            Number of authentication failures `{{ $value }}` is higher than configured threshold of `<%= p('loghost_alerts.security.uaaclientfail.threshold') %>`
+            Number of authentication failures `{{ $value }}` is higher than configured threshold of `<%= p('loghost_alerts.security.uaa_client.fail.threshold') %>`
 
             Details:
             - ip: `{{ $labels.ip }}`
@@ -91,19 +91,81 @@ groups:
             - contact Security team
       - alert: SecurityTooManyUaaUserFailures
         expr: |
-          loghost_uaa_user_login_failure_last_5m >= <%= p('loghost_alerts.security.uaauserfail.threshold') %>
-        for: <%= p('loghost_alerts.security.uaauserfail.evaluation_time') %>
+          loghost_uaa_user_login_failure_last_5m >= <%= p('loghost_alerts.security.uaa_user.fail.threshold') %>
+        for: <%= p('loghost_alerts.security.uaa_user.fail.evaluation_time') %>
         labels:
           service: loghost
           severity: warning
         annotations:
-          summary: "Number of UAA user authentication failures {{ $value }} is higher than <%= p('loghost_alerts.security.uaauserfail.threshold') %> in the last 5 minutes"
+          summary: "Number of UAA user authentication failures {{ $value }} is higher than <%= p('loghost_alerts.security.uaa_user.fail.threshold') %> in the last 5 minutes"
           description: |
             Too many UAA user authentication failures were detected from the origin {{ $labels.ip }} in the last 5 minutes
-            Number of authentication failures `{{ $value }}` is higher than configured threshold of `<%= p('loghost_alerts.security.uaauserfail.threshold') %>`
+            Number of authentication failures `{{ $value }}` is higher than configured threshold of `<%= p('loghost_alerts.security.uaa_user.fail.threshold') %>`
 
             Details:
             - ip: `{{ $labels.ip }}`
+            - director: `{{ $labels.director }}`
+            - deployment: `{{ $labels.deployment }}`
+            - group: `{{ $labels.group }}`
+
+            Impact:
+            - it might be a security attack of the system
+            - this is not a production emergency
+
+            Possible causes:
+            - a legitimate user has trouble login on the platform
+            - a program is using wrong or oudated credentials
+            - an external attack is ongoing on the platform
+
+            Resolution:
+            - contact Cloud Foundry administrator team
+            - contact Security team
+      - alert: SecurityTooManyDiegoSshFailures
+        expr: |
+          loghost_diego_ssh_failure_last_5m >= <%= p('loghost_alerts.security.diego_ssh.fail.threshold') %>
+        for: <%= p('loghost_alerts.security.diego_ssh.fail.evaluation_time') %>
+        labels:
+          service: loghost
+          severity: warning
+        annotations:
+          summary: "Number of Diego SSH authentication failures {{ $value }} is higher than <%= p('loghost_alerts.security.diego_ssh.fail.threshold') %> in the last 5 minutes"
+          description: |
+            Too many Diego SSH authentication failures were detected with user {{ $labels.user }} in the last 5 minutes
+            Number of authentication failures `{{ $value }}` is higher than configured threshold of `<%= p('loghost_alerts.security.diego_ssh.fail.threshold') %>`
+
+            Details:
+            - user: `{{ $labels.user }}`
+            - director: `{{ $labels.director }}`
+            - deployment: `{{ $labels.deployment }}`
+            - group: `{{ $labels.group }}`
+
+            Impact:
+            - it might be a security attack of the system
+            - this is not a production emergency
+
+            Possible causes:
+            - a legitimate user has trouble login on the platform
+            - a program is using wrong or oudated credentials
+            - an external attack is ongoing on the platform
+
+            Resolution:
+            - contact Cloud Foundry administrator team
+            - contact Security team
+      - alert: SecurityTooManyDiegoSshSuccess
+        expr: |
+          sum(loghost_diego_ssh_success_last_5m) by (director, deployment, group, username) >= <%= p('loghost_alerts.security.diego_ssh.success.threshold') %>
+        for: <%= p('loghost_alerts.security.diego_ssh.success.evaluation_time') %>
+        labels:
+          service: loghost
+          severity: warning
+        annotations:
+          summary: "Number of Diego SSH authentication {{ $value }} is higher than <%= p('loghost_alerts.security.diego_ssh.success.threshold') %> in the last 5 minutes"
+          description: |
+            Too many Diego SSH authentication were detected with user {{ $labels.user }} in the last 5 minutes
+            Number of authentication `{{ $value }}` is higher than configured threshold of `<%= p('loghost_alerts.security.diego_ssh.success.threshold') %>`
+
+            Details:
+            - username: `{{ $labels.username }}`
             - director: `{{ $labels.director }}`
             - deployment: `{{ $labels.deployment }}`
             - group: `{{ $labels.group }}`

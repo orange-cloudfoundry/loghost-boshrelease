@@ -47,11 +47,34 @@
             sum(loghost_uaa_user_login_success offset 5m or loghost_uaa_user_login_success{} * 0) by (director, deployment, group, username, ip)
           ) >= 0
 
+      # number of failed minus number of success since each success generates failures
+      # hackish join to get users that did not triggerany success
+      - record: loghost_diego_ssh_failure
+        expr: |
+          sum by (user, director, deployment, group) (
+            loghost_diego_ssh_reject -
+            on(user, director, deployment, group)     (sum(loghost_diego_ssh_success) by (user, director, deployment, group))
+            or on (user, director, deployment, group) loghost_diego_ssh_reject
+          )
+      - record: loghost_diego_ssh_failure_last_5m
+        expr: |
+          (
+            sum(loghost_diego_ssh_failure or loghost_diego_ssh_failure{} * 0) by (director, deployment, group, user)
+            -
+            sum(loghost_diego_ssh_failure offset 5m or loghost_diego_ssh_failure{} * 0) by (director, deployment, group, user)
+          ) >= 0
+      - record: loghost_diego_ssh_success_last_5m
+        expr: |
+          (
+            sum(loghost_diego_ssh_success or loghost_diego_ssh_success{} * 0) by (director, deployment, group, user, username)
+            -
+            sum(loghost_diego_ssh_success offset 5m or loghost_diego_ssh_success{} * 0) by (director, deployment, group, user, username)
+          ) >= 0
 
 - type: replace
-  path: /instance_groups/name=grafana/jobs/name=loghost_dashboards/properties/loghost_dashboards/enable_security
+  path: /instance_groups/name=grafana/jobs/name=loghost_dashboards/properties/loghost_dashboards/security/enabled
   value: true
 
 - type: replace
-  path: /instance_groups/name=prometheus2/jobs/name=loghost_alerts/properties/loghost_alerts/enable_security
+  path: /instance_groups/name=prometheus2/jobs/name=loghost_alerts/properties/loghost_alerts/security/enabled
   value: true

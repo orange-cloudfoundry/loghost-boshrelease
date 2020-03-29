@@ -83,3 +83,34 @@
       ip:         '{{.ip}}'
       username:   '{{.username}}'
       source:     '{{.source}}'
+
+- type: replace
+  path: /instance_groups/name=loghost/jobs/name=loghost_exporter/properties/loghost_exporter/metrics/-
+  value:
+    name: loghost_diego_ssh_success
+    type: counter
+    help: number of diego ssh authentication success
+    match: "ssh_proxy\\[rs2\\] {\"timestamp\":\"%{DATA}\",\"level\":\"info\",\"source\":\"ssh-proxy\",\"message\":\"ssh-proxy.cf-authenticate.app-access-success\",\"data\":{\"app\":\"%{DATA:appname}/%{NUMBER:appindex}\",\"principal\":\"%{DATA}\",\"session\":\"%{DATA},\"username\":\"%{DATA:username}\"}}"
+    labels:
+      director:   '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\1"}}'
+      deployment: '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\2"}}'
+      group:      '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\3"}}'
+      appname:    '{{.appname}}'
+      appindex:   '{{.appindex}}'
+      user:       'cf:{{.appname}}/{{.appindex}}'
+      username:   '{{.username}}'
+
+- type: replace
+  path: /instance_groups/name=loghost/jobs/name=loghost_exporter/properties/loghost_exporter/metrics/-
+  value:
+    name: loghost_diego_ssh_reject
+    type: counter
+    help: number of diego ssh authentication failures
+    match: "ssh_proxy\\[rs2\\] {\"timestamp\":\"%{DATA}\",\"level\":\"error\",\"source\":\"ssh-proxy\",\"message\":\"ssh-proxy.authentication-failed\",\"data\":{\"error\":\"%{DATA}\",\"user\":\"%{DATA:user}\"}}"
+    labels:
+      director:   '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\1"}}'
+      deployment: '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\2"}}'
+      group:      '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\3"}}'
+      user:   '{{.user}}'
+
+

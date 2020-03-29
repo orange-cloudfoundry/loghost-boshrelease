@@ -8,6 +8,6 @@ templates:
   loghost_security.json: loghost_security.json
 
 properties:
-  loghost_dashboards.enable_security:
+  loghost_dashboards.security.enabled:
     description: "enable security dashboard"
     default: false

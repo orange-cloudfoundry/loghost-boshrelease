@@ -26,7 +26,8 @@
     release: loghost
     properties:
       loghost_dashboards:
-        enable_security: false
+        security:
+          enabled: false
 - type: replace
   path: /instance_groups/name=grafana/jobs/name=grafana/properties/grafana/prometheus/dashboard_folders/name=Loghost?/files?/-
   value: /var/vcap/jobs/loghost_dashboards/*.json
@@ -39,7 +40,8 @@
     release: loghost
     properties:
       loghost_alerts:
-        enable_security: false
+        security:
+          enabled: false
 - type: replace
   path: /instance_groups/name=prometheus2/jobs/name=prometheus2/properties/prometheus/rule_files/-
   value:
