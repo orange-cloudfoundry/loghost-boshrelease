@@ -17,6 +17,7 @@
               type: counter
               help: number of errors logs
               match: '(level=error|level":"error|Subscribe error|lvl=err|lvl=eror)'
+              scope: local
               labels: &labels
                 #                            base  dir   dep   grp
                 director:   '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\1"}}'
@@ -26,10 +27,12 @@
               type: counter
               help: number of logs
               match: '.*'
+              scope: global
               labels:
                 <<: *labels
-          directors:
+          local-directors:
             - ((director_name))
+          remote-directors: []
 
 - type: replace
   path: /releases/name=bpm?

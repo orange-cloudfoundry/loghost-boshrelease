@@ -5,6 +5,7 @@
     type: counter
     help: number of successful uaa login for users
     match: "INFO --- Audit: IdentityProviderAuthenticationSuccess \\('%{DATA:login}'\\): principal=%{DATA:guid}, origin=\\[remoteAddress=%{DATA:ip}, clientId=%{DATA:principal}\\], identityZoneId=\\[uaa\\], authenticationType=\\[ldap\\]"
+    scope: local
     labels:
       director:   '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\1"}}'
       deployment: '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\2"}}'
@@ -19,6 +20,7 @@
     type: counter
     help: number of uaa login failures for users
     match: "INFO --- Audit: IdentityProviderAuthenticationFailure \\('%{DATA:login}'\\): principal=null, origin=\\[remoteAddress=%{DATA:ip}, clientId=%{DATA:principal}\\], identityZoneId=\\[uaa\\], authenticationType=\\[ldap\\]"
+    scope: local
     labels:
       director:   '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\1"}}'
       deployment: '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\2"}}'
@@ -34,6 +36,7 @@
     type: counter
     help: number of uaa login failures for clients
     match: "INFO --- Audit: ClientAuthenticationFailure \\('Bad credentials'\\): principal=%{DATA:login}, origin=\\[remoteAddress=%{DATA:ip}, clientId=%{DATA:principal}\\], identityZoneId=\\[uaa\\]"
+    scope: local
     labels:
       director:   '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\1"}}'
       deployment: '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\2"}}'
@@ -48,6 +51,7 @@
     type: counter
     help: number of uaa login success for clients
     match: "INFO --- Audit: ClientAuthenticationSuccess \\('Client authentication success'\\): principal=%{DATA:login}, origin=\\[remoteAddress=%{DATA:ip}, clientId=%{DATA:principal}\\], identityZoneId=\\[uaa\\]"
+    scope: local
     labels:
       director:   '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\1"}}'
       deployment: '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\2"}}'
@@ -62,6 +66,7 @@
     type: counter
     help: number of system auth failures
     match: "type=USER_(AUTH|ERR) msg=audit\\(%{DATA}\\): pid=%{NUMBER} uid=%{NUMBER} auid=%{NUMBER} ses=%{NUMBER} msg='op=PAM:(bad_ident|authentication) acct=\"%{DATA}\" exe=\"%{DATA:source}\" hostname=%{DATA} addr=%{DATA:ip} terminal=%{DATA} res=failed'"
+    scope: local
     labels:
       director:   '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\1"}}'
       deployment: '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\2"}}'
@@ -76,6 +81,7 @@
     type: counter
     help: number of system authentication success
     match: "type=USER_ACCT msg=audit\\(%{DATA}\\): pid=%{NUMBER} uid=%{NUMBER} auid=%{NUMBER} ses=%{NUMBER} msg='op=PAM:accounting acct=\"%{DATA:username}\" exe=\"%{DATA:source}\" hostname=%{DATA} addr=%{DATA:ip} terminal=%{DATA} res=success'"
+    scope: local
     labels:
       director:   '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\1"}}'
       deployment: '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\2"}}'
@@ -91,6 +97,7 @@
     type: counter
     help: number of diego ssh authentication success
     match: "ssh_proxy\\[rs2\\] {\"timestamp\":\"%{DATA}\",\"level\":\"info\",\"source\":\"ssh-proxy\",\"message\":\"ssh-proxy.cf-authenticate.app-access-success\",\"data\":{\"app\":\"%{DATA:appname}/%{NUMBER:appindex}\",\"principal\":\"%{DATA}\",\"session\":\"%{DATA},\"username\":\"%{DATA:username}\"}}"
+    scope: local
     labels:
       director:   '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\1"}}'
       deployment: '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\2"}}'
@@ -107,10 +114,9 @@
     type: counter
     help: number of diego ssh authentication failures
     match: "ssh_proxy\\[rs2\\] {\"timestamp\":\"%{DATA}\",\"level\":\"error\",\"source\":\"ssh-proxy\",\"message\":\"ssh-proxy.authentication-failed\",\"data\":{\"error\":\"%{DATA}\",\"user\":\"%{DATA:user}\"}}"
+    scope: local
     labels:
       director:   '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\1"}}'
       deployment: '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\2"}}'
       group:      '{{gsub .logfile "/var/vcap/store/loghost/(.*?)/(.*?)/(.*?)\\.log" "\\3"}}'
       user:   '{{.user}}'
-
-

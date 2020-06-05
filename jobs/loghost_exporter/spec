@@ -27,13 +27,18 @@ properties:
     description: "path to the SSL key file for protocol https. It is optional. If omitted, a hard-coded default key will be used."
   loghost_exporter.metrics:
     description: "list of metrics to generate, given in grok_exporter config metrics format"
+    default: []
     example:
-      name: loghost_total
-      type: counter
-      help: number of logs
-      match: '.*'
-      labels:
-        my-label: value
+      - name: loghost_total
+        type: counter
+        help: number of logs
+        match: '.*'
+        # local: only site-local logs are processed by the metric
+        # remote: only remote-site logs are processed by the metric
+        # global: all logs are processed by the metric
+        scope: "local|remote|global"
+        labels:
+          my-label: value
   loghost_exporter.base:
     description: "Root directory to mount on loghost_exporter container to access logs"
     default: /var/vcap/store/loghost
@@ -45,5 +50,8 @@ properties:
       - cf
       - prometheus
       - concourse
-  loghost_exporter.directors:
-    description: "list of directors to watch"
+  loghost_exporter.local-directors:
+    description: "list of directors to watch as local-scoped logs"
+  loghost_exporter.remote-directors:
+    description: "list of directors to watch as remote-scoped logs"
+    default: []

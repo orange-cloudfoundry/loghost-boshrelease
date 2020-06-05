@@ -108,7 +108,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(sum(increase(loghost_total[15m]))) or vector(0)",
+          "expr": "count(sum(increase(loghost_total{director=~\"$director\", deployment=~\"$deployment\", group=~\"$group\"}[15m]))) or vector(0)",
           "format": "table",
           "instant": true,
           "refId": "A"
@@ -291,7 +291,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(irate(loghost_total[10m]))",
+          "expr": "sum(irate(loghost_total{director=~\"$director\", deployment=~\"$deployment\", group=~\"$group\"}[10m]))",
           "format": "table",
           "instant": false,
           "legendFormat": "",

@@ -1,6 +1,12 @@
 #!/bin/bash
 
-<% p('loghost_exporter.directors').each do |director| %>
+<% p('loghost_exporter.local-directors').each do |director| %>
+<% p('loghost_exporter.deployments').each do |deployment| %>
+su vcap -c "mkdir -p <%= File.join(p('loghost_exporter.base'), director, deployment) %>"
+<% end %>
+<% end %>
+
+<% p('loghost_exporter.remote-directors').each do |director| %>
 <% p('loghost_exporter.deployments').each do |deployment| %>
 su vcap -c "mkdir -p <%= File.join(p('loghost_exporter.base'), director, deployment) %>"
 <% end %>

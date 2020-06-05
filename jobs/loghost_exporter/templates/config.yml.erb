@@ -3,10 +3,20 @@ require 'yaml'
 
 # compute inputs
 base = p('loghost_exporter.base')
-paths = []
-p('loghost_exporter.directors').each do |director|
-  p('loghost_exporter.deployments').each do |deployment|
-    paths << File.join(base, director, deployment, "*.log")
+scopes = {
+  "local"  => [],
+  "remote" => [],
+  "global" => [],
+}
+
+p('loghost_exporter.deployments').each do |deployment|
+  p('loghost_exporter.local-directors').each do |director|
+    scopes["local"] << File.join(base, director, deployment, "*.log")
+    scopes["global"] << File.join(base, director, deployment, "*.log")
+  end
+  p('loghost_exporter.remote-directors').each do |director|
+    scopes["remote"] << File.join(base, director, deployment, "*.log")
+    scopes["global"] << File.join(base, director, deployment, "*.log")
   end
 end
 
@@ -37,13 +47,21 @@ end
 config = {
   "global"  => { "config_version" => 3  },
   "imports" => imports,
-  "metrics" => p('loghost_exporter.metrics'),
+  "metrics" => [],
   "input"   => {
     "type"                    => "file",
     "fail_on_missing_logfile" => false,
-    "paths"                   => paths
+    "paths"                   => scopes["global"]
   },
   "server" => server
 }
+
+p('loghost_exporter.metrics').each do |metric|
+  scope = metric.fetch("scope", "local")
+  metric["paths"] = scopes[scope]
+  metric.delete("scope")
+  config["metrics"].push(metric)
+end
+
 %>
 <%= config.to_yaml %>

@@ -10,7 +10,9 @@ properties:
   loghost_alerts.nologs.evaluation_time:
     description: "No received logs alerts evaluation time"
     default: 15m
-
+  loghost_alerts.nologs.directors:
+    description: "List of director origin to check in nolog alert"
+    default: []
   loghost_alerts.security.enabled:
     decription: "Enable security alerts"
     default: false

@@ -3,10 +3,7 @@ groups:
     rules:
       - alert: LoghostNoLogReceived
         expr: |
-          (
-            sum(increase(loghost_total[15m]))
-            or vector(0)
-          ) == 0
+          sum(increase(loghost_total[15m])) by (director) == 0
         for: <%= p('loghost_alerts.nologs.evaluation_time') %>
         labels:
           service: loghost
@@ -25,6 +22,28 @@ groups:
 
             Resolution:
             - contact Cloud Foundry administrator team
+      - alert: LoghostNotEnoughSources
+        expr: |
+          count(sum(loghost_total) by (director)) != <%= p('loghost_alerts.nologs.directors').length() %>
+        for: <%= p('loghost_alerts.nologs.evaluation_time') %>
+        labels:
+          service: loghost
+          severity: warning
+        annotations:
+          summary: "No logs were received from some directors at instance `{{$labels.instance}}` in the last 15 minutes"
+          description: |
+            Logs are not concetrated and locally stored on loghost instance `{{$labels.instance}}`
+
+            Impact:
+            - moderate impact and is not a production emergency
+
+            Possible causes:
+            - misconfiguration of rsyslog and loghost_exporter on loghost instance
+            - prometheus is not scraping loghost_exporter as it should
+
+            Resolution:
+            - contact Cloud Foundry administrator team
+
       <% if p('loghost_alerts.security.enabled') %>
       - alert: SecurityTooManyAuthFailures
         expr: |
