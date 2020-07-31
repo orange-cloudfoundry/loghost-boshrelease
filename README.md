@@ -262,7 +262,7 @@ addons:
 releases:
 - name: syslog
   sha1: 658fe5d6f049ec50383c09c0b227261251bfd4eb
-  url: https://artifactory.packages.install-os.multis.p.fti.net/cloudfoundry/syslog/syslog-11.6.1-ubuntu-xenial-621.tgz
+  url: https://artifactory/cloudfoundry/syslog/syslog-11.6.1-ubuntu-xenial-621.tgz
   version: 11.6.1
 ```
 
