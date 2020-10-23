@@ -12,6 +12,9 @@
     release: loghost
     properties:
       loghost_exporter:
+          custom_patterns:
+            - name: "IPLIST"
+              value: "(%{IP}(, %{IP})*)"
           metrics:
             - name: loghost_error_total
               type: counter
@@ -30,6 +33,15 @@
               scope: global
               labels:
                 <<: *labels
+            - name: loghost_cf_api_queries
+              type: counter
+              help: number of queries on cf api
+              match: 'CEF:0\|cloud_foundry\|cloud_controller_n.*user=%{WORD:username}.*cs[0-9]+Label=xForwardedFor cs[0-9]+=%{IPLIST:ips}'
+              scope: local
+              labels:
+                <<: *labels
+                ips: "{{.ips}}"
+                username: "{{.username}}"
           local-directors:
             - ((director_name))
           remote-directors: []

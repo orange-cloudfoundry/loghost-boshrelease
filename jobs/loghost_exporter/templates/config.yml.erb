@@ -22,13 +22,16 @@ end
 
 
 # compute imports
-imports = [{
-  "type" => "grok_patterns",
-  "dir" => "/var/vcap/packages/grok_exporter/patterns"
-}]
-if_p('loghost_exporter.imports') do |items|
-  imports.concat(items)
-end
+imports = [
+  {
+    "type" => "grok_patterns",
+    "dir" => "/var/vcap/packages/grok_exporter/patterns"
+  },
+  {
+    "type" => "grok_patterns",
+    "dir" => "/var/vcap/jobs/loghost_exporter/config/patterns"
+  }
+]
 
 # compute server settings
 server = {

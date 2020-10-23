@@ -4,6 +4,7 @@ name: loghost_exporter
 templates:
   config.yml.erb: config/config.yml
   bpm.yml: config/bpm.yml
+  custom.erb: config/patterns/bpm.yml
   pre-start.erb: bin/pre-start
 
 packages:
@@ -25,6 +26,12 @@ properties:
     description: "path to the SSL certificate file for protocol https. It is optional. If omitted, a hard-coded default certificate will be used."
   loghost_exporter.server.key:
     description: "path to the SSL key file for protocol https. It is optional. If omitted, a hard-coded default key will be used."
+  loghost_exporter.custom_patterns:
+    description: "List of custom grok patterns"
+    default: []
+    example:
+      - name: "MYPATTERN"
+        pattern: "val[0-9]+"
   loghost_exporter.metrics:
     description: "list of metrics to generate, given in grok_exporter config metrics format"
     default: []
