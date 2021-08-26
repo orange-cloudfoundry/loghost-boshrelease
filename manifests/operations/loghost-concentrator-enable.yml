@@ -18,7 +18,7 @@
                 port: 514
               forward: {}
             logrotate:
-              max-hours: 360
+              default-max-hours: 360
     networks:
       - name: default
     stemcell: default
