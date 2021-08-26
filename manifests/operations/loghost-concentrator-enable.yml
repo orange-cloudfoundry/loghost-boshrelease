@@ -17,8 +17,14 @@
                 enabled: true
                 port: 514
               forward: {}
+              longterm-jobs:
+                - deployment: cf
+                  job: api
+                - deployment: cf
+                  job: uaa
             logrotate:
               default-max-hours: 360
+              longterm-max-hours: 1440
     networks:
       - name: default
     stemcell: default

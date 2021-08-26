@@ -26,6 +26,18 @@ template(name="ParsedOutputFile" type="list") {
   constant(value=".log")
 }
 
+# define filename template local storage
+# [instance@47450 director="{director}" deployment="{deployment}" group="{instance}" az="{az}" id="id"]
+template(name="ParsedOutputFileLT" type="list") {
+  constant(value="/var/vcap/store/loghost_lt/")
+  property(name="$.director")
+  constant(value="/")
+  property(name="$.deployment")
+  constant(value="/")
+  property(name="$.group")
+  constant(value=".log")
+}
+
 # define template for forwarding
 template(name="ForwardTemplate" type="list") {
   property(name="rawmsg")
@@ -49,6 +61,13 @@ if ($structured-data contains "instance@47450") then {
 
   # output to local file
   action(type="omfile" dynaFile="ParsedOutputFile" dirOwner="vcap" fileOwner="vcap" dirGroup="vcap" fileGroup="vcap" fileCreateMode="0640" dirCreateMode="0750")
+
+  # dupplicate output to local file for long-term logs
+  <% if p('loghost_concentrator.syslog.longterm-jobs').each do |conf| %>
+  if ($.deployment == "<%= conf['deployment'] %>") and ($.group == "<%= conf['job'] %>") then {
+    action(type="omfile" dynaFile="ParsedOutputFileLT" dirOwner="vcap" fileOwner="vcap" dirGroup="vcap" fileGroup="vcap" fileCreateMode="0640" dirCreateMode="0750")
+  }
+  <% end %>
 
   <% if p('loghost_concentrator.syslog.forward').length > 0 %>
   # extract structured-data into variables for easier use in condition expressions

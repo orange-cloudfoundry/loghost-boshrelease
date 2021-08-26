@@ -8,9 +8,8 @@
  su vcap vcap
 }
 
-<% p('loghost_concentrator.logrotate.max-hours').each do |conf| %>
-/var/vcap/store/loghost/*/<%= conf["deployment"] %>/<%= conf["job"] %>.log {
- rotate <%= conf["hours"] %>
+/var/vcap/store/loghost_lt/*/*/*.log {
+ rotate <%= p('loghost_concentrator.logrotate.longterm-max-hours') %>
  hourly
  missingok
  compress
@@ -18,4 +17,3 @@
  dateext
  su vcap vcap
 }
-<% end %>
