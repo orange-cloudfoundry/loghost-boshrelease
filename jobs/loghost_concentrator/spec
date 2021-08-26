@@ -58,5 +58,16 @@ properties:
               transport: udp
 
   loghost_concentrator.logrotate.max-hours:
+    description: "List of specific max-hours for given file patterns"
+    default: []
+    example:
+      - deployment: cf
+        job: api
+        hours: 1488
+      - deployment: cf
+        job: uaa
+        hours: 1488
+
+  loghost_concentrator.logrotate.default-max-hours:
     description: "Number of hours to keep log-rotated archives"
     default: 360
