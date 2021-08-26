@@ -63,7 +63,7 @@ if ($structured-data contains "instance@47450") then {
   action(type="omfile" dynaFile="ParsedOutputFile" dirOwner="vcap" fileOwner="vcap" dirGroup="vcap" fileGroup="vcap" fileCreateMode="0640" dirCreateMode="0750")
 
   # dupplicate output to local file for long-term logs
-  <% if p('loghost_concentrator.syslog.longterm-jobs').each do |conf| %>
+  <% p('loghost_concentrator.syslog.longterm-jobs').each do |conf| %>
   if ($.deployment == "<%= conf['deployment'] %>") and ($.group == "<%= conf['job'] %>") then {
     action(type="omfile" dynaFile="ParsedOutputFileLT" dirOwner="vcap" fileOwner="vcap" dirGroup="vcap" fileGroup="vcap" fileCreateMode="0640" dirCreateMode="0750")
   }
