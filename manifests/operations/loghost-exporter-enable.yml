@@ -42,6 +42,29 @@
                 <<: *labels
                 ips: "{{.ips}}"
                 username: "{{.username}}"
+            - name: loghost_squid_tunnel_queries
+              type: counter
+              help: number of tunnel queries handled by squid proxy
+              match: "squid\\[rs2\\] %{DATA} %{IP:ip} %{DATA}/%{NUMBER:status} %{NUMBER} CONNECT %{DATA:domain} %{DATA:user} %{DATA}/"
+              scope: local
+              labels:
+                <<: *labels
+                ip: "{{.ip}}"
+                domain: "{{.domain}}"
+                user: "{{.user}}"
+                status: "{{.status}}"
+            - name: loghost_squid_http_queries
+              type: counter
+              help: number of http queries handled by squid proxy
+              match: "squid\\[rs2\\] %{DATA} %{IP:ip} %{DATA}/%{NUMBER:status} %{NUMBER} %{DATA:method} %{DATA:scheme}://%{URIHOST:domain}%{DATA} %{DATA:user} %{DATA}/"
+              scope: local
+              labels:
+                <<: *labels
+                ip: "{{.ip}}"
+                scheme: "{{.scheme}}"
+                domain: "{{.domain}}"
+                user: "{{.user}}"
+                status: "{{.status}}"
           local-directors:
             - ((director_name))
           remote-directors: []

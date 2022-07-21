@@ -71,6 +71,22 @@
             sum(loghost_diego_ssh_success offset 5m or loghost_diego_ssh_success{} * 0) by (director, deployment, group, user, username)
           ) >= 0
 
+      - record: loghost_squid_tunnel_failure_last_5m
+        expr: |
+          (
+            sum(loghost_squid_tunnel_queries{status=~"4.*"} or loghost_squid_tunnel_queries{status=~"4.*"} * 0) by (director, deployment, group, ip, status)
+            -
+            sum(loghost_squid_tunnel_queries{status=~"4.*"} offset 5m or loghost_squid_tunnel_queries{status=~"4.*"} * 0) by (director, deployment, group, ip, status)
+          ) >= 0
+
+      - record: loghost_squid_http_failure_last_5m
+        expr: |
+          (
+            sum(loghost_squid_http_queries{status=~"4.*"} or loghost_squid_http_queries{status=~"4.*"} * 0) by (director, deployment, group, ip, status)
+            -
+            sum(loghost_squid_http_queries{status=~"4.*"} offset 5m or loghost_squid_http_queries{status=~"4.*"} * 0) by (director, deployment, group, ip, status)
+          ) >= 0
+
 - type: replace
   path: /instance_groups/name=grafana/jobs/name=loghost_dashboards/properties/loghost_dashboards/security/enabled
   value: true
