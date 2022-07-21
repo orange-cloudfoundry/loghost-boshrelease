@@ -65,6 +65,23 @@
                 domain: "{{.domain}}"
                 user: "{{.user}}"
                 status: "{{.status}}"
+            # This is intended to expose failing transactions to log services until
+            # https://github.com/cloudfoundry/loggregator-agent-release/issues/64 is resolved.
+            #
+            # Does appear on diego-cells at:
+            #  /var/vcap/sys/log/loggr-syslog-agent/loggr-syslog-agent.stderr.log
+            # And in the loghosts at:
+            #  /var/vcap/store/loghost/*/cf/router*?.log
+            - name: loghost_logservice_dropped
+              type: counter
+              help: number of dropped enveloppes
+              match: >-
+                ^%{NOTSPACE} %{NOTSPACE} loggr-syslog-agent\[rs2\] %{NOTSPACE} %{NOTSPACE}
+                failed to write to %{HOSTPORT:target}, retrying in [^,]+, err:
+              scope: local
+              labels:
+                <<: *labels
+                target: '{{.target}}'
           local-directors:
             - ((director_name))
           remote-directors: []
