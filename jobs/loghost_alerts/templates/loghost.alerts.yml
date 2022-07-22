@@ -3,7 +3,7 @@ groups:
     rules:
       - alert: LoghostNoLogReceived
         expr: |
-          sum(increase(loghost_total[15m])) by (director) == 0
+          sum(increase(loghost_total[15m])) by (director, instance) == 0
         for: <%= p('loghost_alerts.nologs.evaluation_time') %>
         labels:
           service: loghost
