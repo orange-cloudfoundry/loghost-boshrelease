@@ -24,7 +24,7 @@ groups:
             - contact Cloud Foundry administrator team
       - alert: LoghostNotEnoughSources
         expr: |
-          count(sum(loghost_total) by (director)) != <%= p('loghost_alerts.nologs.directors').length() %>
+          count(sum(loghost_total) by (director, instance)) != <%= p('loghost_alerts.nologs.directors').length() %>
         for: <%= p('loghost_alerts.nologs.evaluation_time') %>
         labels:
           service: loghost
@@ -180,7 +180,7 @@ groups:
         annotations:
           summary: "Number of Diego SSH authentication {{ $value }} is higher than <%= p('loghost_alerts.security.diego_ssh.success.threshold') %> in the last 5 minutes"
           description: |
-            Too many Diego SSH authentication were detected with user {{ $labels.user }} in the last 5 minutes
+            Too many Diego SSH authentication were detected with user {{ $labels.username }} in the last 5 minutes
             Number of authentication `{{ $value }}` is higher than configured threshold of `<%= p('loghost_alerts.security.diego_ssh.success.threshold') %>`
 
             Details:
