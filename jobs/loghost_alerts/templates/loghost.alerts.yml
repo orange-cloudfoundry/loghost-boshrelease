@@ -43,6 +43,22 @@ groups:
 
             Resolution:
             - contact Cloud Foundry administrator team
+      - alert: LoghostDroppedMessages
+        expr: |
+          increase(loghost_logservice_dropped[15m]) != 0
+        for: <%= p('loghost_alerts.dropped.evaluation_time') %>
+        labels:
+          service: loghost
+          severity: warning
+        annotations:
+          summary: "Logs sent to `{{$labels.target}}` have been dropped in the last 15 minutes"
+          description: |-
+            Impact:
+            - some logs sent to `{{$labels.target}}` are being lost
+
+            Possible causes:
+            - network issue between the components
+            - the target is not able to process the messages properly
 
       <% if p('loghost_alerts.security.enabled') %>
       - alert: SecurityTooManyAuthFailures
