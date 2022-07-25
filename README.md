@@ -184,6 +184,7 @@ Ops-files provided in the release also provide metrics, as described in the [usa
 
 The job `loghost_alerts` defines the following alerts for your [prometheus-boshrelease] deployment:
 - `LoghostNoLogReceived`: triggers if exporter reports no processed logs in the last 15 minutes
+- `LoghostDroppedMessages`: triggers when there is an increase of "failed to write to target.example.net:6067" in the logs
 
 When `loghost_alerts.security.enabled` key is set to `true` (default `false`), the job also defines
 the following alerts:
