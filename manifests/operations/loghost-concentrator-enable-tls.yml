@@ -1,0 +1,19 @@
+- type: replace
+  path: /instance_groups/name=loghost/jobs/name=loghost_concentrator/properties/loghost_concentrator/syslog/tcp/enabled?
+  value: true
+
+- type: replace
+  path: /instance_groups/name=loghost/jobs/name=loghost_concentrator/properties/loghost_concentrator/syslog/tcp/port?
+  value: 6514
+
+- type: replace
+  path: /instance_groups/name=loghost/jobs/name=loghost_concentrator/properties/loghost_concentrator/syslog/tls/cert?
+  value: ((loghost_ssl.certificate))
+
+- type: replace
+  path: /instance_groups/name=loghost/jobs/name=loghost_concentrator/properties/loghost_concentrator/syslog/tls/ca?
+  value: ((loghost_ssl.ca))
+
+- type: replace
+  path: /instance_groups/name=loghost/jobs/name=loghost_concentrator/properties/loghost_concentrator/syslog/tls/key?
+  value: ((loghost_ssl.private_key))

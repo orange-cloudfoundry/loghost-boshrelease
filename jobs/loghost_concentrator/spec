@@ -6,6 +6,9 @@ templates:
   drain.erb: bin/drain
   rsyslog-loghost.conf.erb: config/rsyslog-loghost.conf
   logrotate-loghost.conf.erb: config/logrotate-loghost.conf
+  ssl_ca.cert.erb: config/ssl_ca.cert
+  ssl.cert.erb: config/ssl.cert
+  ssl.key.erb: config/ssl.key
 
 packages: []
 
@@ -23,6 +26,13 @@ properties:
   loghost_concentrator.syslog.udp.port:
     description: "Port for UDP module"
     default: 514
+
+  loghost_concentrator.syslog.tls.cert:
+    description: "Enable TLS Encryption using given server certificate (only for TCP socket)"
+  loghost_concentrator.syslog.tls.ca:
+    description: "Enable TLS Encryption using given CA certificate (only for TCP socket)"
+  loghost_concentrator.syslog.tls.key:
+    description: "Enable TLS Encryption using given server key (only for TCP socket)"
 
   loghost_concentrator.syslog.forward:
     description: |

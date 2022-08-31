@@ -1,13 +1,30 @@
 $PrivDropToUser root
 $PrivDropToGroup root
 
+<% if_p('loghost_concentrator.syslog.tls.cert') do |v| %>
+global(
+DefaultNetstreamDriver="gtls"
+DefaultNetstreamDriverCAFile="/var/vcap/jobs/loghost_concentrator/config/ssl_ca.cert"
+DefaultNetstreamDriverCertFile="/var/vcap/jobs/loghost_concentrator/config/ssl.cert"
+DefaultNetstreamDriverKeyFile="/var/vcap/jobs/loghost_concentrator/config/ssl.key"
+)
+<% end %>
+
+
 <% if p('loghost_concentrator.syslog.udp.enabled') %>
 module(load="imudp")
 input(type="imudp" port="<%= p('loghost_concentrator.syslog.udp.port') %>")
 <% end %>
 
 <% if p('loghost_concentrator.syslog.tcp.enabled') %>
-module(load="imtcp")
+module(
+  load="imtcp"
+  <% if_p('loghost_concentrator.syslog.tls.cert') do |v| %>
+  StreamDriver.Name="gtls"
+  StreamDriver.Mode="1"
+  StreamDriver.Authmode="anon"
+  <% end %>
+)
 input(type="imtcp" port="<%= p('loghost_concentrator.syslog.tcp.port') %>")
 <% end %>
 
@@ -74,7 +91,18 @@ if ($structured-data contains "instance@47450") then {
   <% p('loghost_concentrator.syslog.forward').each do |key, value| %>
   if <%= value.fetch("conditions").join(" and ") %> then {
     <% value.fetch("targets").each do |forward| %>
-    action(type="omfwd" Target="<%= forward.fetch('address') %>" Port="<%= forward.fetch('port') %>" Protocol="<%= forward.fetch('transport') %>" Template="ForwardTemplate")
+    action(
+      type="omfwd"
+      Target="<%= forward.fetch('address') %>"
+      Port="<%= forward.fetch('port') %>"
+      Protocol="<%= forward.fetch('transport') %>"
+      Template="ForwardTemplate"
+      <% if_p('loghost_concentrator.syslog.tls.cert') do |v| %>
+      StreamDriver="gtls"
+      StreamDriverMode="1"
+      StreamDriverAuthMode="anon"
+      <% end %>
+    )
     <% end %>
   }
   <% end %>
