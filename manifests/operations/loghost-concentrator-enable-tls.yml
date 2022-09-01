@@ -7,13 +7,8 @@
   value: 6514
 
 - type: replace
-  path: /instance_groups/name=loghost/jobs/name=loghost_concentrator/properties/loghost_concentrator/syslog/tls/cert?
-  value: ((loghost_ssl.certificate))
-
-- type: replace
-  path: /instance_groups/name=loghost/jobs/name=loghost_concentrator/properties/loghost_concentrator/syslog/tls/ca?
-  value: ((loghost_ssl.ca))
-
-- type: replace
-  path: /instance_groups/name=loghost/jobs/name=loghost_concentrator/properties/loghost_concentrator/syslog/tls/key?
-  value: ((loghost_ssl.private_key))
+  path: /instance_groups/name=loghost/jobs/name=loghost_concentrator/properties/loghost_concentrator/syslog/tls?
+  value:
+    cert: ((loghost_ssl.certificate))
+    ca: ((loghost_ssl.ca))
+    key: ((loghost_ssl.private_key))
