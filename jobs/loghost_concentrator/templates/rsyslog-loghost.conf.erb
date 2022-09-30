@@ -93,6 +93,9 @@ if ($structured-data contains "instance@47450") then {
     <% value.fetch("targets").each do |forward| %>
     action(type="omfwd" Target="<%= forward.fetch('address') %>" Port="<%= forward.fetch('port') %>" Protocol="<%= forward.fetch('transport') %>" Template="ForwardTemplate" <% if_p('loghost_concentrator.syslog.tls.cert') do |v| %> StreamDriver="gtls" StreamDriverMode="1" StreamDriverAuthMode="x509/certvalid" <% end %>)
     <% end %>
+    <% if value.fetch("targets").empty? %>
+    continue
+    <% end %>
   }
   <% end %>
   <% end %>
