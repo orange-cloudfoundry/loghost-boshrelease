@@ -1,5 +1,5 @@
 - type: replace
-  path: /instance_groups/-
+  path: /instance_groups?/-
   value:
     instances: 1
     azs: [z1]
