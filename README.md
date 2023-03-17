@@ -155,8 +155,8 @@ jobs:
           my.alias.internal:
           - 127.0.0.1
           my.other.alias.internal:
-          - *.collector-z1.default.logsearch.bosh
-          - *.collector-z2.default.logsearch.bosh
+          - '*.collector-z1.default.logsearch.bosh'
+          - '*.collector-z2.default.logsearch.bosh'
 ```
 
 ### Exporter

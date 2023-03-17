@@ -11,7 +11,7 @@ groups:
         annotations:
           summary: "No logs were received at instance `{{$labels.instance}}` in the last 15 minutes"
           description: |
-            Logs are not concetrated and locally stored on loghost instance `{{$labels.instance}}`
+            Logs are not concentrated and locally stored on loghost instance `{{$labels.instance}}`
 
             Impact:
             - moderate impact and is not a production emergency
@@ -32,7 +32,7 @@ groups:
         annotations:
           summary: "No logs were received from some directors at instance `{{$labels.instance}}` in the last 15 minutes"
           description: |
-            Logs are not concetrated and locally stored on loghost instance `{{$labels.instance}}`
+            Logs are not concentrated and locally stored on loghost instance `{{$labels.instance}}`
 
             Impact:
             - moderate impact and is not a production emergency
@@ -87,7 +87,7 @@ groups:
 
             Possible causes:
             - a legitimate user has trouble login on the platform
-            - a program is using wrong or oudated credentials
+            - a program is using wrong or outdated credentials
             - an external attack is ongoing on the platform
 
             Resolution:
@@ -118,7 +118,7 @@ groups:
 
             Possible causes:
             - a legitimate user has trouble login on the platform
-            - a program is using wrong or oudated credentials
+            - a program is using wrong or outdated credentials
             - an external attack is ongoing on the platform
 
             Resolution:
@@ -149,7 +149,7 @@ groups:
 
             Possible causes:
             - a legitimate user has trouble login on the platform
-            - a program is using wrong or oudated credentials
+            - a program is using wrong or outdated credentials
             - an external attack is ongoing on the platform
 
             Resolution:
@@ -180,7 +180,7 @@ groups:
 
             Possible causes:
             - a legitimate user has trouble login on the platform
-            - a program is using wrong or oudated credentials
+            - a program is using wrong or outdated credentials
             - an external attack is ongoing on the platform
 
             Resolution:
@@ -211,7 +211,7 @@ groups:
 
             Possible causes:
             - a legitimate user has trouble login on the platform
-            - a program is using wrong or oudated credentials
+            - a program is using wrong or outdated credentials
             - an external attack is ongoing on the platform
 
             Resolution:
