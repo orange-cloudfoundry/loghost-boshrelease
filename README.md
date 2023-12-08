@@ -101,7 +101,7 @@ target objects as follows:
   targets:
     - address: hostname
       port: port
-      transport: tcp|udp
+      transport: tcp|udp|relp
     - ...
 ```
 

@@ -13,6 +13,13 @@ templates:
 packages: []
 
 properties:
+  loghost_concentrator.syslog.relp.enabled:
+    description: "Enable RELP module"
+    default: false
+  loghost_concentrator.syslog.relp.port:
+    description: "Port for RELP module"
+    default: 2514
+
   loghost_concentrator.syslog.tcp.enabled:
     description: "Enable TCP module"
     default: false
@@ -66,6 +73,9 @@ properties:
             - address: 10.120.53
               port: 514
               transport: udp
+            - address: 198.51.100.0
+              port: 2514
+              transport: relp
 
   loghost_concentrator.syslog.longterm-jobs:
     description: "List of specific jobs that must be kept for long period of time"

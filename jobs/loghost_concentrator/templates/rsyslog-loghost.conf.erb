@@ -10,7 +10,24 @@ DefaultNetstreamDriverKeyFile="/var/vcap/jobs/loghost_concentrator/config/ssl.ke
 )
 <% end %>
 
-
+<% if p('loghost_concentrator.syslog.relp.enabled') -%>
+<%# module RELP is already loaded, with TLS support, in /etc/rsyslog.conf %>
+input(type="imrelp" port="<%= p('loghost_concentrator.syslog.relp.port') %>"
+  maxDataSize="10k"
+  keepAlive="on"
+  keepAlive.Probes="6"
+  keepAlive.Interval="5"
+  keepAlive.Time="5"
+  <% if_p('loghost_concentrator.syslog.tls.cert') do -%>
+  tls="on"
+  tls.cacert="/var/vcap/jobs/loghost_concentrator/config/ssl_ca.cert"
+  tls.mycert="/var/vcap/jobs/loghost_concentrator/config/ssl.cert"
+  tls.myprivkey="/var/vcap/jobs/loghost_concentrator/config/ssl.key"
+  tls.authmode="certvalid"
+  tls.permittedpeer="rsyslog"
+  <% end -%>
+)
+<% end -%>
 <% if p('loghost_concentrator.syslog.udp.enabled') %>
 module(load="imudp")
 input(type="imudp" port="<%= p('loghost_concentrator.syslog.udp.port') %>")
@@ -91,7 +108,27 @@ if ($structured-data contains "instance@47450") then {
   <% p('loghost_concentrator.syslog.forward').each do |key, value| %>
   if <%= value.fetch("conditions").join(" and ") %> then {
     <% value.fetch("targets").each do |forward| %>
-    action(type="omfwd" Target="<%= forward.fetch('address') %>" Port="<%= forward.fetch('port') %>" Protocol="<%= forward.fetch('transport') %>" Template="ForwardTemplate" <% if_p('loghost_concentrator.syslog.tls.cert') do |v| %> StreamDriver="gtls" StreamDriverMode="1" StreamDriverAuthMode="x509/certvalid" <% end %>)
+      action(
+        Target="<%= forward.fetch('address') %>" Port="<%= forward.fetch('port') %>"
+        Template="ForwardTemplate"
+      <% if /relp/i =~ forward.fetch('transport') -%>
+        type="omrelp"
+        <% if_p('loghost_concentrator.syslog.tls.cert') do -%>
+        tls="on"
+        tls.cacert="/var/vcap/jobs/loghost_concentrator/config/ssl_ca.cert"
+        tls.mycert="/var/vcap/jobs/loghost_concentrator/config/ssl.cert"
+        tls.myprivkey="/var/vcap/jobs/loghost_concentrator/config/ssl.key"
+        tls.authmode="certvalid"
+        tls.permittedpeer="rsyslog"
+        tls.compression="on"
+        <% end -%>
+      <% else -%>
+        type="omfwd" Protocol="<%= forward.fetch('transport') %>"
+        <% if_p('loghost_concentrator.syslog.tls.cert') do -%>
+        StreamDriver="gtls" StreamDriverMode="1" StreamDriverAuthMode="x509/certvalid"
+        <% end %>
+      <% end -%>
+      )
     <% end %>
     <% if value.fetch("targets").empty? %>
     continue
