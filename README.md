@@ -79,7 +79,7 @@ The job also configures local `logrotate` in order to rotate and compress logs e
 Rotated logs are stored in the same directories with the `-%Y%m%d%H.gz` suffix.
 
 The number of kept rotations can be configured `loghost_concentrator.logrotate.max-hours` property
-with a default value of `360` (ie: 15 days).
+with a default value of `360` (i.e.: 15 days).
 
 #### Forwarding and clustering
 
@@ -175,7 +175,7 @@ to give the list of logs files that the exported should watch.
 > at exporter startup. Because rsyslog files are created on the fly when events are received, the
 > job creates required directories in its `pre-start` script.
 
-In addition to user defined metrics, the exporter provides
+In addition to user-defined metrics, the exporter provides
 [builtin metrics][grok-builtin-metrics].
 
 Ops-files provided in the release also provide metrics, as described in the [usage section](#usage).

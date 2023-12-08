@@ -46,7 +46,7 @@ properties:
       Hash that describe log forwarding. Each key defines a target type composed by
       - a list of conditions that must match to trigger the forward
       - a list of remote endpoints to forward the log to
-      Conditions must be writter in RainerScript. Available fields are standard rsyslog
+      Conditions must be written in RainerScript. Available fields are standard rsyslog
       variables (like $msg, $programname, etc) and parsed structured-data defined in
       instance@47450:
       - $.director
