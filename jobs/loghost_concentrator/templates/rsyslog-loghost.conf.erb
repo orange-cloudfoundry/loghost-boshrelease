@@ -1,32 +1,48 @@
 $PrivDropToUser root
 $PrivDropToGroup root
 
-<% if_p('loghost_concentrator.syslog.tls.cert') do |v| %>
+<% if_p('loghost_concentrator.syslog.tls.cert') do -%>
 global(
 DefaultNetstreamDriver="gtls"
 DefaultNetstreamDriverCAFile="/var/vcap/jobs/loghost_concentrator/config/ssl_ca.cert"
 DefaultNetstreamDriverCertFile="/var/vcap/jobs/loghost_concentrator/config/ssl.cert"
 DefaultNetstreamDriverKeyFile="/var/vcap/jobs/loghost_concentrator/config/ssl.key"
 )
-<% end %>
+<% end -%>
 
-
-<% if p('loghost_concentrator.syslog.udp.enabled') %>
+<% if p('loghost_concentrator.syslog.relp.enabled') -%>
+<%# module RELP is already loaded, with TLS support, in /etc/rsyslog.conf %>
+input(type="imrelp" port="<%= p('loghost_concentrator.syslog.relp.port') %>"
+  maxDataSize="10k"
+  keepAlive="on"
+  keepAlive.Probes="6"
+  keepAlive.Interval="5"
+  keepAlive.Time="5"
+  <% if_p('loghost_concentrator.syslog.tls.cert') do -%>
+  tls="on"
+  tls.cacert="/var/vcap/jobs/loghost_concentrator/config/ssl_ca.cert"
+  tls.mycert="/var/vcap/jobs/loghost_concentrator/config/ssl.cert"
+  tls.myprivkey="/var/vcap/jobs/loghost_concentrator/config/ssl.key"
+  tls.authmode="certvalid"
+  tls.permittedpeer="rsyslog"
+  <% end -%>
+)
+<% end -%>
+<% if p('loghost_concentrator.syslog.udp.enabled') -%>
 module(load="imudp")
 input(type="imudp" port="<%= p('loghost_concentrator.syslog.udp.port') %>")
-<% end %>
-
-<% if p('loghost_concentrator.syslog.tcp.enabled') %>
+<% end -%>
+<% if p('loghost_concentrator.syslog.tcp.enabled') -%>
 module(
   load="imtcp"
-  <% if_p('loghost_concentrator.syslog.tls.cert') do |v| %>
+  <% if_p('loghost_concentrator.syslog.tls.cert') do -%>
   StreamDriver.Name="gtls"
   StreamDriver.Mode="1"
   StreamDriver.Authmode="anon"
-  <% end %>
+  <% end -%>
 )
 input(type="imtcp" port="<%= p('loghost_concentrator.syslog.tcp.port') %>")
-<% end %>
+<% end -%>
 
 # load module that parses structured-data field
 module(load="mmpstrucdata")
@@ -79,26 +95,46 @@ if ($structured-data contains "instance@47450") then {
   # output to local file
   action(type="omfile" dynaFile="ParsedOutputFile" dirOwner="vcap" fileOwner="vcap" dirGroup="vcap" fileGroup="vcap" fileCreateMode="0640" dirCreateMode="0750")
 
-  # dupplicate output to local file for long-term logs
-  <% p('loghost_concentrator.syslog.longterm-jobs').each do |conf| %>
+  # duplicate output to local file for long-term logging
+<% p('loghost_concentrator.syslog.longterm-jobs').each do |conf| -%>
   if ($.deployment == "<%= conf['deployment'] %>") and ($.group == "<%= conf['job'] %>") then {
     action(type="omfile" dynaFile="ParsedOutputFileLT" dirOwner="vcap" fileOwner="vcap" dirGroup="vcap" fileGroup="vcap" fileCreateMode="0640" dirCreateMode="0750")
   }
-  <% end %>
+<% end -%>
 
-  <% if p('loghost_concentrator.syslog.forward').length > 0 %>
-  # extract structured-data into variables for easier use in condition expressions
-  <% p('loghost_concentrator.syslog.forward').each do |key, value| %>
+<% if p('loghost_concentrator.syslog.forward').length > 0 -%>
+  <%# extract structured-data into variables for easier use in condition expressions -%>
+  <% p('loghost_concentrator.syslog.forward').each do |_, value| -%>
   if <%= value.fetch("conditions").join(" and ") %> then {
-    <% value.fetch("targets").each do |forward| %>
-    action(type="omfwd" Target="<%= forward.fetch('address') %>" Port="<%= forward.fetch('port') %>" Protocol="<%= forward.fetch('transport') %>" Template="ForwardTemplate" <% if_p('loghost_concentrator.syslog.tls.cert') do |v| %> StreamDriver="gtls" StreamDriverMode="1" StreamDriverAuthMode="x509/certvalid" <% end %>)
-    <% end %>
-    <% if value.fetch("targets").empty? %>
+    <% value.fetch("targets").each do |forward| -%>
+      action(
+        Target="<%= forward.fetch('address') %>" Port="<%= forward.fetch('port') %>"
+        Template="ForwardTemplate"
+      <% if /relp/i =~ forward.fetch('transport') -%>
+        type="omrelp"
+        <% if_p('loghost_concentrator.syslog.tls.cert') do -%>
+        tls="on"
+        tls.cacert="/var/vcap/jobs/loghost_concentrator/config/ssl_ca.cert"
+        tls.mycert="/var/vcap/jobs/loghost_concentrator/config/ssl.cert"
+        tls.myprivkey="/var/vcap/jobs/loghost_concentrator/config/ssl.key"
+        tls.authmode="certvalid"
+        tls.permittedpeer="rsyslog"
+        tls.compression="on"
+        <% end -%>
+      <% else -%>
+        type="omfwd" Protocol="<%= forward.fetch('transport') %>"
+        <% if_p('loghost_concentrator.syslog.tls.cert') do -%>
+        StreamDriver="gtls" StreamDriverMode="1" StreamDriverAuthMode="x509/certvalid"
+        <% end %>
+      <% end -%>
+      )
+    <% end -%>
+    <% if value.fetch("targets").empty? -%>
     continue
-    <% end %>
+    <% end -%>
   }
-  <% end %>
-  <% end %>
+  <% end -%>
+<% end -%>
 
   # no further log processing
   stop

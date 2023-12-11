@@ -13,6 +13,13 @@ templates:
 packages: []
 
 properties:
+  loghost_concentrator.syslog.relp.enabled:
+    description: "Enable RELP module"
+    default: false
+  loghost_concentrator.syslog.relp.port:
+    description: "Port for RELP module"
+    default: 2514
+
   loghost_concentrator.syslog.tcp.enabled:
     description: "Enable TCP module"
     default: false
@@ -39,7 +46,7 @@ properties:
       Hash that describe log forwarding. Each key defines a target type composed by
       - a list of conditions that must match to trigger the forward
       - a list of remote endpoints to forward the log to
-      Conditions must be writter in RainerScript. Available fields are standard rsyslog
+      Conditions must be written in RainerScript. Available fields are standard rsyslog
       variables (like $msg, $programname, etc) and parsed structured-data defined in
       instance@47450:
       - $.director
@@ -66,6 +73,9 @@ properties:
             - address: 10.120.53
               port: 514
               transport: udp
+            - address: 198.51.100.0
+              port: 2514
+              transport: relp
 
   loghost_concentrator.syslog.longterm-jobs:
     description: "List of specific jobs that must be kept for long period of time"

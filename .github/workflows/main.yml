@@ -2,7 +2,7 @@ name: build-and-release
 
 on:
   push:
-    # not not consider simplec commit
+    # do not consider simples commits
     branches:
       - '!*'
     # consider only release and pre-release tags
