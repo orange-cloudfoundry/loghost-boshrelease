@@ -1,0 +1,37 @@
+name: loghost
+version: 1.7.2
+commit_hash: 1076afe
+uncommitted_changes: false
+jobs:
+- name: loghost_alerts
+  version: c4a8dd31dd850acfeb276739103739ada7c40dd045f214fe1e4365538e53de2b
+  fingerprint: c4a8dd31dd850acfeb276739103739ada7c40dd045f214fe1e4365538e53de2b
+  sha1: sha256:ffe01a40690402491739144b3e09a6660cada88130db3dfd67e2e133926acf14
+  packages: []
+- name: loghost_concentrator
+  version: 0d39990920a79037d23f83fd2ed515c202d0717944a69de5ac1d331f0041e110
+  fingerprint: 0d39990920a79037d23f83fd2ed515c202d0717944a69de5ac1d331f0041e110
+  sha1: sha256:ffcfcc9a1f6f8fe38433f29319b6099ab82182f03e7f416676ce29cf34079707
+  packages: []
+- name: loghost_dashboards
+  version: 2ff7b231bdb19d7719f653e001bc515af986b1ee08a6410d785acf5d4ac6151e
+  fingerprint: 2ff7b231bdb19d7719f653e001bc515af986b1ee08a6410d785acf5d4ac6151e
+  sha1: sha256:68394e04025678fe7ff99345a14a3c7d09f846d137564c0b349145dbfe91637e
+  packages: []
+- name: loghost_dns
+  version: f016263363501bf40f61422df77830d61c11b0fc1fb394bc46bdb2ce10ff0b3e
+  fingerprint: f016263363501bf40f61422df77830d61c11b0fc1fb394bc46bdb2ce10ff0b3e
+  sha1: sha256:97a981dee2ace1d1eb8d474be172a10ffdd38a65d7edf75a8b636b6d192c0f6c
+  packages: []
+- name: loghost_exporter
+  version: 0c06ff4de7aff61c12561c481d5dcf9d77a9c366bd0bba7ca9ea6d4d3651ea5c
+  fingerprint: 0c06ff4de7aff61c12561c481d5dcf9d77a9c366bd0bba7ca9ea6d4d3651ea5c
+  sha1: sha256:7c16c9f5c3b55239c7ab515b25d4863b4b7b0c671b49f832592ebc6fd83f54a2
+  packages:
+  - grok_exporter
+packages:
+- name: grok_exporter
+  version: 79c0f6d6ec4b7bbab18ffbb570bcf68aef280ac6814e5474ebe401946fc76d72
+  fingerprint: 79c0f6d6ec4b7bbab18ffbb570bcf68aef280ac6814e5474ebe401946fc76d72
+  sha1: sha256:eeee21c030d5c24e998851b8db97db239be2407368c80ca533f1662ead537923
+  dependencies: []
