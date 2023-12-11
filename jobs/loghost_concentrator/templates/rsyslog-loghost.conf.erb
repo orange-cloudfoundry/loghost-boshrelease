@@ -11,7 +11,11 @@ DefaultNetstreamDriverKeyFile="/var/vcap/jobs/loghost_concentrator/config/ssl.ke
 <% end -%>
 
 <% if p('loghost_concentrator.syslog.relp.enabled') -%>
-<%# module RELP is already loaded, with TLS support, in /etc/rsyslog.conf %>
+<%# module omrelp is already loaded, with TLS support, in /etc/rsyslog.conf %>
+module(
+  load="imrelp"
+  <% if_p('loghost_concentrator.syslog.tls.cert') do %>tls.tlslib="openssl"<% end -%>
+)
 input(type="imrelp" port="<%= p('loghost_concentrator.syslog.relp.port') %>"
   maxDataSize="10k"
   keepAlive="on"
