@@ -3,10 +3,10 @@ $PrivDropToGroup root
 
 <% if_p('loghost_concentrator.syslog.tls.cert') do -%>
 global(
-DefaultNetstreamDriver="gtls"
-DefaultNetstreamDriverCAFile="/var/vcap/jobs/loghost_concentrator/config/ssl_ca.cert"
-DefaultNetstreamDriverCertFile="/var/vcap/jobs/loghost_concentrator/config/ssl.cert"
-DefaultNetstreamDriverKeyFile="/var/vcap/jobs/loghost_concentrator/config/ssl.key"
+  DefaultNetstreamDriver="gtls"
+  DefaultNetstreamDriverCAFile="/var/vcap/jobs/loghost_concentrator/config/ssl_ca.cert"
+  DefaultNetstreamDriverCertFile="/var/vcap/jobs/loghost_concentrator/config/ssl.cert"
+  DefaultNetstreamDriverKeyFile="/var/vcap/jobs/loghost_concentrator/config/ssl.key"
 )
 <% end -%>
 
@@ -14,7 +14,7 @@ DefaultNetstreamDriverKeyFile="/var/vcap/jobs/loghost_concentrator/config/ssl.ke
 <%# module omrelp is already loaded, with TLS support, in /etc/rsyslog.conf %>
 module(
   load="imrelp"
-  <% if_p('loghost_concentrator.syslog.tls.cert') do %>tls.tlslib="openssl"<% end -%>
+  <% if_p('loghost_concentrator.syslog.tls.cert') do %>tls.tlslib="openssl"<% end %>
 )
 input(type="imrelp" port="<%= p('loghost_concentrator.syslog.relp.port') %>"
   maxDataSize="10k"
@@ -22,7 +22,7 @@ input(type="imrelp" port="<%= p('loghost_concentrator.syslog.relp.port') %>"
   keepAlive.Probes="6"
   keepAlive.Interval="5"
   keepAlive.Time="5"
-  <% if_p('loghost_concentrator.syslog.tls.cert') do -%>
+  <%- if_p('loghost_concentrator.syslog.tls.cert') do %>
   tls="on"
   tls.cacert="/var/vcap/jobs/loghost_concentrator/config/ssl_ca.cert"
   tls.mycert="/var/vcap/jobs/loghost_concentrator/config/ssl.cert"
@@ -32,6 +32,7 @@ input(type="imrelp" port="<%= p('loghost_concentrator.syslog.relp.port') %>"
   <% end -%>
 )
 <% end -%>
+
 <% if p('loghost_concentrator.syslog.udp.enabled') -%>
 module(load="imudp")
 input(type="imudp" port="<%= p('loghost_concentrator.syslog.udp.port') %>")
@@ -39,11 +40,11 @@ input(type="imudp" port="<%= p('loghost_concentrator.syslog.udp.port') %>")
 <% if p('loghost_concentrator.syslog.tcp.enabled') -%>
 module(
   load="imtcp"
-  <% if_p('loghost_concentrator.syslog.tls.cert') do -%>
+  <%- if_p('loghost_concentrator.syslog.tls.cert') do %>
   StreamDriver.Name="gtls"
   StreamDriver.Mode="1"
   StreamDriver.Authmode="anon"
-  <% end -%>
+  <%- end %>
 )
 input(type="imtcp" port="<%= p('loghost_concentrator.syslog.tcp.port') %>")
 <% end -%>
@@ -106,17 +107,17 @@ if ($structured-data contains "instance@47450") then {
   }
 <% end -%>
 
-<% if p('loghost_concentrator.syslog.forward').length > 0 -%>
-  <%# extract structured-data into variables for easier use in condition expressions -%>
-  <% p('loghost_concentrator.syslog.forward').each do |_, value| -%>
+<% if p('loghost_concentrator.syslog.forward').length > 0 %>
+  <%#- extract structured-data into variables for easier use in condition expressions %>
+  <%- p('loghost_concentrator.syslog.forward').each do |_, value| %>
   if <%= value.fetch("conditions").join(" and ") %> then {
-    <% value.fetch("targets").each do |forward| -%>
+    <%- value.fetch("targets").each do |forward| %>
       action(
         Target="<%= forward.fetch('address') %>" Port="<%= forward.fetch('port') %>"
         Template="ForwardTemplate"
-      <% if /relp/i =~ forward.fetch('transport') -%>
+      <%- if /relp/i =~ forward.fetch('transport') %>
         type="omrelp"
-        <% if_p('loghost_concentrator.syslog.tls.cert') do -%>
+        <%- if_p('loghost_concentrator.syslog.tls.cert') do %>
         tls="on"
         tls.cacert="/var/vcap/jobs/loghost_concentrator/config/ssl_ca.cert"
         tls.mycert="/var/vcap/jobs/loghost_concentrator/config/ssl.cert"
@@ -124,21 +125,21 @@ if ($structured-data contains "instance@47450") then {
         tls.authmode="certvalid"
         tls.permittedpeer="rsyslog"
         tls.compression="on"
-        <% end -%>
-      <% else -%>
+        <%- end %>
+      <%- else %>
         type="omfwd" Protocol="<%= forward.fetch('transport') %>"
-        <% if_p('loghost_concentrator.syslog.tls.cert') do -%>
+        <%- if_p('loghost_concentrator.syslog.tls.cert') do %>
         StreamDriver="gtls" StreamDriverMode="1" StreamDriverAuthMode="x509/certvalid"
-        <% end %>
-      <% end -%>
+        <%- end %>
+      <%- end %>
       )
-    <% end -%>
-    <% if value.fetch("targets").empty? -%>
+    <%- end %>
+    <%- if value.fetch("targets").empty? %>
     continue
-    <% end -%>
+    <%- end %>
   }
-  <% end -%>
-<% end -%>
+  <%- end %>
+<% end %>
 
   # no further log processing
   stop
