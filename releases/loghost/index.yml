@@ -43,4 +43,6 @@ builds:
     version: 1.7.3
   ea268b88-b5d8-4220-5c3a-ae473ee5f5f4:
     version: 1.6.0
+  f85d8b5c-2510-493e-58d6-193857f063eb:
+    version: 1.7.5
 format-version: "2"
