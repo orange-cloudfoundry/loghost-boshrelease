@@ -17,11 +17,11 @@ module(
   <% if_p('loghost_concentrator.syslog.tls.cert') do %>tls.tlslib="openssl"<% end %>
 )
 input(type="imrelp" port="<%= p('loghost_concentrator.syslog.relp.port') %>"
-  maxDataSize="10k"
+  maxDataSize="16k"
   keepAlive="on"
-  keepAlive.Probes="6"
-  keepAlive.Interval="5"
-  keepAlive.Time="5"
+  keepAlive.Probes="5"
+  keepAlive.Interval="60"
+  keepAlive.Time="120"
   <%- if_p('loghost_concentrator.syslog.tls.cert') do %>
   tls="on"
   tls.mycert="/var/vcap/jobs/loghost_concentrator/config/ssl.cert"
@@ -116,6 +116,11 @@ if ($structured-data contains "instance@47450") then {
         Template="ForwardTemplate"
       <%- if /relp/i =~ forward.fetch('transport') %>
         type="omrelp"
+        maxDataSize="10k"
+        keepAlive="on"
+        keepAlive.Probes="5"
+        keepAlive.Interval="60"
+        keepAlive.Time="120"
         <%- if_p('loghost_concentrator.syslog.tls.cert') do %>
         tls="on"
         tls.mycert="/var/vcap/jobs/loghost_concentrator/config/ssl.cert"
