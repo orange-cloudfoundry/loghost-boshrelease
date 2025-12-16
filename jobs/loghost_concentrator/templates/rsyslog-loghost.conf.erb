@@ -3,10 +3,10 @@ $PrivDropToGroup root
 
 <% if_p('loghost_concentrator.syslog.tls.cert') do -%>
 global(
-  DefaultNetstreamDriver="gtls"
-  DefaultNetstreamDriverCAFile="/var/vcap/jobs/loghost_concentrator/config/ssl_ca.cert"
-  DefaultNetstreamDriverCertFile="/var/vcap/jobs/loghost_concentrator/config/ssl.cert"
-  DefaultNetstreamDriverKeyFile="/var/vcap/jobs/loghost_concentrator/config/ssl.key"
+  defaultNetstreamDriver="gtls"
+  defaultNetstreamDriverCAFile="/var/vcap/jobs/loghost_concentrator/config/ssl_ca.cert"
+  defaultNetstreamDriverCertFile="/var/vcap/jobs/loghost_concentrator/config/ssl.cert"
+  defaultNetstreamDriverKeyFile="/var/vcap/jobs/loghost_concentrator/config/ssl.key"
 )
 <% end -%>
 
@@ -116,11 +116,10 @@ if ($structured-data contains "instance@47450") then {
         Template="ForwardTemplate"
       <%- if /relp/i =~ forward.fetch('transport') %>
         type="omrelp"
-        maxdatasize="10k"
-        keepalive="on"
-        keepalive.probes="5"
-        keepalive.interval="60"
-        keepalive.time="120"
+        net.keepalive="on"
+        net.keepalive.probes="5"
+        net.keepalive.interval="60"
+        net.keepalive.time="120"
         <%- if_p('loghost_concentrator.syslog.tls.cert') do %>
         tls="on"
         tls.mycert="/var/vcap/jobs/loghost_concentrator/config/ssl.cert"
