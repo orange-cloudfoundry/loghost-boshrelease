@@ -116,11 +116,11 @@ if ($structured-data contains "instance@47450") then {
         Template="ForwardTemplate"
       <%- if /relp/i =~ forward.fetch('transport') %>
         type="omrelp"
-        maxdatasize="10k"
-        keepalive="on"
-        keepalive.probes="5"
-        keepalive.interval="60"
-        keepalive.time="120"
+        maxDataSize="10k"
+        keepAlive="on"
+        keepAlive.Probes="5"
+        keepAlive.Interval="60"
+        keepAlive.Time="120"
         <%- if_p('loghost_concentrator.syslog.tls.cert') do %>
         tls="on"
         tls.mycert="/var/vcap/jobs/loghost_concentrator/config/ssl.cert"
