@@ -1,6 +1,6 @@
 # prometheus scraping
 - type: replace
-  path: /instance_groups/name=prometheus2/jobs/name=prometheus2/properties/prometheus/scrape_configs/-
+  path: /instance_groups/name=prometheus/jobs/name=prometheus/properties/prometheus/scrape_configs/-
   value:
     job_name: loghost_exporter
     file_sd_configs:
@@ -34,7 +34,7 @@
 
 # alertmanager alerts
 - type: replace
-  path: /instance_groups/name=prometheus2/jobs/-
+  path: /instance_groups/name=prometheus/jobs/-
   value:
     name: loghost_alerts
     release: loghost
@@ -47,7 +47,7 @@
             - ((site))-((name))
 
 - type: replace
-  path: /instance_groups/name=prometheus2/jobs/name=prometheus2/properties/prometheus/rule_files/-
+  path: /instance_groups/name=prometheus/jobs/name=prometheus/properties/prometheus/rule_files/-
   value:
     /var/vcap/jobs/loghost_alerts/*.alerts.yml
 
