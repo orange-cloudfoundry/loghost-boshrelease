@@ -1,5 +1,5 @@
 - type: replace
-  path: /instance_groups/name=prometheus2/jobs/name=prometheus2/properties/prometheus/custom_rules?/-
+  path: /instance_groups/name=prometheus/jobs/name=prometheus/properties/prometheus/custom_rules?/-
   value:
     name: loghost-security-rules
     # https://github.com/prometheus/prometheus/issues/1673
@@ -92,5 +92,5 @@
   value: true
 
 - type: replace
-  path: /instance_groups/name=prometheus2/jobs/name=loghost_alerts/properties/loghost_alerts/security/enabled
+  path: /instance_groups/name=prometheus/jobs/name=loghost_alerts/properties/loghost_alerts/security/enabled
   value: true
