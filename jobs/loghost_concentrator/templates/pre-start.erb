@@ -9,6 +9,9 @@ mkdir -p ${logRoot}
 chown vcap:vcap ${logRoot}
 chmod 0755 ${logRoot}
 
+cp ${jobRoot}/config/apparmor-loghost.conf /etc/apparmor.d/local/usr.sbin.rsyslogd
+chmod 0644 /etc/apparmor.d/local/usr.sbin.rsyslogd
+
 cp ${jobRoot}/config/rsyslog-loghost.conf /etc/rsyslog.d/100-rsyslog-loghost.conf
 chmod 0644 /etc/rsyslog.d/100-rsyslog-loghost.conf
 

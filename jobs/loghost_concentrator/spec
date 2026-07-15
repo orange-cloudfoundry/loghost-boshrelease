@@ -6,6 +6,7 @@ templates:
   drain.erb: bin/drain
   rsyslog-loghost.conf.erb: config/rsyslog-loghost.conf
   logrotate-loghost.conf.erb: config/logrotate-loghost.conf
+  apparmor-loghost.conf.erb: config/apparmor-loghost.conf
   ssl_ca.cert.erb: config/ssl_ca.cert
   ssl.cert.erb: config/ssl.cert
   ssl.key.erb: config/ssl.key
